@@ -3,78 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Meine komplexe Webseite</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Kath. Jugend Neuengrün - Mitglied werden</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+        }
+        .signature-pad {
+            border: 1px solid #000;
+            width: 100%;
+            height: 150px;
+            margin-top: 10px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px;
+            width: 100%;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
+    <h1>Kath. Jugend Neuengrün - Mitgliedsanmeldung</h1>
+    <form id="membershipForm">
+        <label for="firstName">Vorname:</label>
+        <input type="text" id="firstName" name="firstName" required>
 
-    <!-- Navigationsleiste -->
-    <nav class="navbar">
-        <div class="container">
-            <a href="#" class="brand">Meine Website</a>
-            <ul class="nav-links">
-                <li><a href="#home">Home</a></li>
-                <li><a href="#about">Über uns</a></li>
-                <li><a href="#services">Dienstleistungen</a></li>
-                <li><a href="#contact">Kontakt</a></li>
-            </ul>
-        </div>
-    </nav>
+        <label for="lastName">Nachname:</label>
+        <input type="text" id="lastName" name="lastName" required>
 
-    <!-- Hauptinhalt -->
-    <section id="home" class="hero-section">
-        <div class="container">
-            <h1>Willkommen auf meiner Webseite!</h1>
-            <p>Dies ist eine Beispielseite, um die Grundlagen von HTML, CSS und JavaScript zu demonstrieren.</p>
-            <a href="#about" class="btn">Mehr erfahren</a>
-        </div>
-    </section>
+        <label for="birthdate">Geburtsdatum:</label>
+        <input type="date" id="birthdate" name="birthdate" required>
 
-    <section id="about" class="about-section">
-        <div class="container">
-            <h2>Über uns</h2>
-            <p>Wir bieten qualitativ hochwertige Dienstleistungen und haben viele zufriedene Kunden.</p>
-        </div>
-    </section>
+        <label for="street">Straße:</label>
+        <input type="text" id="street" name="street" required>
 
-    <section id="services" class="services-section">
-        <div class="container">
-            <h2>Unsere Dienstleistungen</h2>
-            <div class="service-card">
-                <h3>Webdesign</h3>
-                <p>Wir gestalten moderne und benutzerfreundliche Webseiten.</p>
-            </div>
-            <div class="service-card">
-                <h3>SEO-Optimierung</h3>
-                <p>Wir verbessern die Sichtbarkeit Ihrer Webseite in Suchmaschinen.</p>
-            </div>
-            <div class="service-card">
-                <h3>Beratung</h3>
-                <p>Wir bieten individuelle Beratung für Ihr Online-Projekt.</p>
-            </div>
-        </div>
-    </section>
+        <label for="city">PLZ/Wohnort:</label>
+        <input type="text" id="city" name="city" required>
 
-    <section id="contact" class="contact-section">
-        <div class="container">
-            <h2>Kontakt</h2>
-            <form id="contactForm">
-                <label for="name">Name:</label>
-                <input type="text" id="name" name="name" required>
-                <label for="email">E-Mail:</label>
-                <input type="email" id="email" name="email" required>
-                <label for="message">Nachricht:</label>
-                <textarea id="message" name="message" required></textarea>
-                <button type="submit" class="btn">Absenden</button>
-            </form>
-        </div>
-    </section>
+        <label for="phone">Telefon:</label>
+        <input type="tel" id="phone" name="phone">
 
-    <footer>
-        <p>© 2024 Meine Website. Alle Rechte vorbehalten.</p>
-    </footer>
+        <label for="email">E-Mail:</label>
+        <input type="email" id="email" name="email" required>
 
-    <script src="script.js"></script>
+        <h3>SEPA-Lastschriftmandat</h3>
+        <p>Jährlicher Mitgliedsbeitrag: 7 €</p>
+
+        <label for="iban">IBAN:</label>
+        <input type="text" id="iban" name="iban" required>
+
+        <label for="bic">BIC:</label>
+        <input type="text" id="bic" name="bic" required>
+
+        <h3>Unterschrift</h3>
+        <canvas id="signaturePad" class="signature-pad"></canvas>
+        <button type="button" onclick="clearSignature()">Signatur löschen</button>
+
+        <button type="submit">Mitgliedsantrag absenden</button>
+    </form>
+
+    <script>
+        const form = document.getElementById('membershipForm');
+        const signaturePad = document.getElementById('signaturePad');
+        const ctx = signaturePad.getContext('2d');
+        let drawing = false;
+
+        signaturePad.addEventListener('mousedown', startDrawing);
+        signaturePad.addEventListener('mousemove', draw);
+        signaturePad.addEventListener('mouseup', stopDrawing);
+        signaturePad.addEventListener('touchstart', startDrawing);
+        signaturePad.addEventListener('touchmove', draw);
+        signaturePad.addEventListener('touchend', stopDrawing);
+
+        function startDrawing(e) {
+            drawing = true;
+            ctx.beginPath();
+            ctx.moveTo(e.clientX - signaturePad.offsetLeft, e.clientY - signaturePad.offsetTop);
+            e.preventDefault();
+        }
+
+        function draw(e) {
+            if (!drawing) return;
+            ctx.lineTo(e.clientX - signaturePad.offsetLeft, e.clientY - signaturePad.offsetTop);
+            ctx.stroke();
+            e.preventDefault();
+        }
+
+        function stopDrawing() {
+            drawing = false;
+        }
+
+        function clearSignature() {
+            ctx.clearRect(0, 0, signaturePad.width, signaturePad.height);
+        }
+
+        form.addEventListener('submit', function (e) {
+            e.preventDefault();
+            // Hier könnte der Code stehen, um die Daten zu verarbeiten und das SEPA-Mandat zu generieren.
+            alert('Mitgliedsantrag erfolgreich übermittelt!');
+        });
+    </script>
 </body>
 </html>
