@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Meine komplexe Webseite</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Navigationsleiste -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="brand">Meine Website</a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">Über uns</a></li>
+                <li><a href="#services">Dienstleistungen</a></li>
+                <li><a href="#contact">Kontakt</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hauptinhalt -->
+    <section id="home" class="hero-section">
+        <div class="container">
+            <h1>Willkommen auf meiner Webseite!</h1>
+            <p>Dies ist eine Beispielseite, um die Grundlagen von HTML, CSS und JavaScript zu demonstrieren.</p>
+            <a href="#about" class="btn">Mehr erfahren</a>
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <div class="container">
+            <h2>Über uns</h2>
+            <p>Wir bieten qualitativ hochwertige Dienstleistungen und haben viele zufriedene Kunden.</p>
+        </div>
+    </section>
+
+    <section id="services" class="services-section">
+        <div class="container">
+            <h2>Unsere Dienstleistungen</h2>
+            <div class="service-card">
+                <h3>Webdesign</h3>
+                <p>Wir gestalten moderne und benutzerfreundliche Webseiten.</p>
+            </div>
+            <div class="service-card">
+                <h3>SEO-Optimierung</h3>
+                <p>Wir verbessern die Sichtbarkeit Ihrer Webseite in Suchmaschinen.</p>
+            </div>
+            <div class="service-card">
+                <h3>Beratung</h3>
+                <p>Wir bieten individuelle Beratung für Ihr Online-Projekt.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="contact-section">
+        <div class="container">
+            <h2>Kontakt</h2>
+            <form id="contactForm">
+                <label for="name">Name:</label>
+                <input type="text" id="name" name="name" required>
+                <label for="email">E-Mail:</label>
+                <input type="email" id="email" name="email" required>
+                <label for="message">Nachricht:</label>
+                <textarea id="message" name="message" required></textarea>
+                <button type="submit" class="btn">Absenden</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <p>© 2024 Meine Website. Alle Rechte vorbehalten.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
