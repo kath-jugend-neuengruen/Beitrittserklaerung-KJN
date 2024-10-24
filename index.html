@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beitrittserklärung PDF</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -99,14 +101,6 @@
             <input type="email" id="email" name="email" required>
         </div>
         <div class="form-group">
-            <label for="ort">Ort/Datum:</label>
-            <input type="text" id="ort" name="ort" required>
-        </div>
-        <div class="form-group">
-            <label for="unterschrift">Unterschrift (Name eingeben):</label>
-            <input type="text" id="unterschrift" name="unterschrift" required>
-        </div>
-        <div class="form-group">
             <label for="kontoinhaber">Kontoinhaber:</label>
             <input type="text" id="kontoinhaber" name="kontoinhaber" required>
         </div>
@@ -118,10 +112,28 @@
             <label for="bic">BIC:</label>
             <input type="text" id="bic" name="bic" required>
         </div>
+<div class="form-group">
+            <label for="ort">Ort</label>
+            <input type="text" id="ort" name="ort" required>
+        </div>
+<div class="form-group">
+    <label for="unterschrift">Unterschrift:</label>
+    <canvas id="signature-pad" width="400" height="200" style="border: 1px solid #000;"></canvas>
+    <button type="button" id="clear-signature">Unterschrift löschen</button>
+</div>
+
         <button type="button" id="download-pdf">PDF herunterladen</button>
     </form>
 
     <script>
+const canvas = document.getElementById('signature-pad');
+const signaturePad = new SignaturePad(canvas);
+
+// Button, um die Unterschrift zu löschen
+document.getElementById('clear-signature').addEventListener('click', () => {
+    signaturePad.clear();
+});
+
         document.getElementById('download-pdf').addEventListener('click', async () => {
             const { PDFDocument, rgb } = PDFLib;
             const pdfDoc = await PDFDocument.create();
@@ -129,10 +141,14 @@
 
             const formData = new FormData(document.getElementById('membership-form'));
 
-            // Definierte Ränder für das gesamte Dokument
+            
+	// Aktuelles Datum im Format dd.mm.yyyy
+const currentDate = new Date();
+const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}.${(currentDate.getMonth() + 1).toString().padStart(2, '0')}.${currentDate.getFullYear()}`;
+// Definierte Ränder für das gesamte Dokument
             const marginLeft = 50;
             const marginTop = 750;
-            const fieldspace = 265; //Abstand zwischen den bearbeitbaren Feldern
+            const fieldspace = 255; //Abstand zwischen den bearbeitbaren Feldern
             const textWidth = page.getWidth() - 2 * marginLeft; // Breite des Textbereichs
             let currentY = marginTop;
 
@@ -155,7 +171,7 @@
             });
 
             currentY -= 20; // Abstand nach Untertitel
-            page.drawText(`Hiermit erkläre ich meinen Beitritt zur Kath. Jugend Neuengrün-Schlegelshaid...`, {
+            page.drawText(`Hiermit erkläre ich meinen Beitritt zur Kath. Jugend Neuengrün-Schlegelshaid und bin gleichzeitig damit einverstanden, dass der Verein meine unten angegebenen Daten, wie z.B. Vor- und Zuname, Geburtstag usw., sowie Ehrungen/Auszeichnungen und Fotografien, veröffentlichen darf. Dieser Einwilligung kann ich jederzeit widersprechen.`, {
                 x: marginLeft,
                 y: currentY,
                 size: 12,
@@ -172,44 +188,134 @@
                 { name: 'Straße', x: marginLeft, y: currentY - 90, value: formData.get('strasse') },
                 { name: 'PLZ/Wohnort', x: marginLeft, y: currentY - 120, value: formData.get('plz') },
                 { name: 'Telefon', x: marginLeft + fieldspace, y: currentY, value: formData.get('telefon') },
-                { name: 'E-Mail', x: marginLeft + fieldspace, y: currentY - 30, value: formData.get('email') },
-                { name: 'Ort/Datum', x: marginLeft + fieldspace, y: currentY - 60, value: formData.get('ort') },
-                { name: 'Unterschrift', x: marginLeft + fieldspace, y: currentY - 90, value: formData.get('unterschrift') }
+                { name: 'E-Mail', x: marginLeft + fieldspace, y: currentY - 30, value: formData.get('email') }
             ];
 
-            // Füge bearbeitbare Textfelder hinzu
-            fields.forEach(field => {
-                const inputField = pdfDoc.getForm().createTextField(field.name);
-                inputField.addToPage(page, {
-                    x: field.x + 95, // Position für das Textfeld
-                    y: field.y,
-                    width: 130,
-                    height: 20,
-                });
-                inputField.setFontSize(12);
-                inputField.setText(field.value);
+           // Füge bearbeitbare Textfelder hinzu
+for (const field of fields) {
+    const inputField = pdfDoc.getForm().createTextField(field.name);
+    inputField.addToPage(page, {
+        x: field.x + 105, // Position für das Textfeld
+        y: field.y,
+        width: 130,
+        height: 20,
+    });
+
+    // Zeichne den Namen des Feldes
+    page.drawText(field.name, {
+        x: field.x,
+        y: field.y + 5,
+        size: 14,
+        color: rgb(0, 0, 0),
+        font: await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold)
+    });
+
+    // Setze die Textgröße und den Wert des Feldes
+    inputField.setFontSize(12);
+    inputField.setText(field.value);
+}
+
+
+
+ currentY -= 170; // Abstand nach Titel
+            page.drawText('SEPA-Lastschriftmandat', {
+                x: page.getWidth() / 2 - 70,
+                y: currentY,
+                size: 14,
+                color: rgb(0, 0, 0),
+                font: await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold)
             });
 
+currentY -= 20; // Abstand nach Untertitel
+            page.drawText(`Gläubiger-ID: DE50ZZZ00000431398   Mandatsreferenznummer: Mitgliedsnummer
+
+Ich ermächtige die Kath. Jugend Neuengrün-Schlegelshaid den Jahresbeitrag von momentan 7.-- € (Fälligkeit: jeweils Anfang Januar) von meinem Konto mittels Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die von der Kath. Jugend Neuengrün-Schlegelshaid, auf mein Konto gezogenen Lastschriften einzulösen.
+
+Hinweis: Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, die Erstattung des belasteten Betrages verlangen. Es gelten dabei die mit meinem Kreditinstitut vereinbarten Bedingungen.`, {
+                x: marginLeft,
+                y: currentY,
+                size: 12,
+                color: rgb(0, 0, 0),
+                maxWidth: textWidth
+            });
             // Platz für Bankinformationen
             currentY -= 200;
             const bankFields = [
                 { name: 'Kontoinhaber', x: marginLeft, y: currentY, value: formData.get('kontoinhaber') },
-                { name: 'IBAN', x: marginLeft + fieldspace, y: currentY, value: formData.get('iban') },
-                { name: 'BIC', x: marginLeft + fieldspace, y: currentY - 30, value: formData.get('bic') }
+                { name: 'IBAN', x: marginLeft , y: currentY - 30, value: formData.get('iban') },
+                { name: 'BIC', x: marginLeft + fieldspace, y: currentY, value: formData.get('bic') },
+		{ name: 'Ort', x: marginLeft + fieldspace, y: currentY - 30, value: formData.get('ort')},
+{ name: 'Datum', x: marginLeft + fieldspace, y: currentY - 60, value: formattedDate }
             ];
 
-            // Füge bearbeitbare Textfelder für Bankinformationen hinzu
-            bankFields.forEach(field => {
-                const inputField = pdfDoc.getForm().createTextField(field.name);
-                inputField.addToPage(page, {
-                    x: field.x + 145,
-                    y: field.y,
-                    width: 130,
-                    height: 20,
-                });
-                inputField.setFontSize(12);
-                inputField.setText(field.value);
-            });
+            // Füge bearbeitbare Textfelder hinzu
+for (const field of bankFields) {
+    const inputField = pdfDoc.getForm().createTextField(field.name);
+    inputField.addToPage(page, {
+        x: field.x + 105, // Position für das Textfeld
+        y: field.y,
+        width: 130,
+        height: 20,
+    });
+
+    // Zeichne den Namen des Feldes
+    page.drawText(field.name, {
+        x: field.x,
+        y: field.y + 5,
+        size: 14,
+        color: rgb(0, 0, 0),
+        font: await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold)
+    });
+
+    // Setze die Textgröße und den Wert des Feldes
+    inputField.setFontSize(12);
+    inputField.setText(field.value);
+}
+
+// Prüfen, ob die Unterschrift gezeichnet wurde
+if (!signaturePad.isEmpty()) {
+
+    // Funktion zum Umwandeln von DataURL zu ArrayBuffer
+    function dataURLToArrayBuffer(dataURL) {
+        const binaryString = atob(dataURL.split(',')[1]);
+        const len = binaryString.length;
+        const bytes = new Uint8Array(len);
+        for (let i = 0; i < len; i++) {
+            bytes[i] = binaryString.charCodeAt(i);
+        }
+        return bytes.buffer;
+    }
+
+    // Abrufen der DataURL von signaturePad
+    const signatureImage = signaturePad.toDataURL();
+
+    // Umwandeln der DataURL in ein ArrayBuffer
+    const pngImageBytes = dataURLToArrayBuffer(signatureImage);
+
+    try {
+        // Einbetten des PNG in das PDF-Dokument
+        const pngImage = await pdfDoc.embedPng(pngImageBytes);
+        console.log('PNG erfolgreich eingebettet:', pngImage);
+
+        // Skalieren des PNG-Bildes auf 50 % der Originalgröße
+        const pngDims = pngImage.scale(0.5);  // Hier kannst du die Skalierung nach Bedarf anpassen
+
+        // Zeichnen der Unterschrift (PNG-Bild) auf der gewünschten Position
+        page.drawImage(pngImage, {
+            x: 150,  // X-Position auf der Seite
+            y: 100,  // Y-Position auf der Seite
+            width: pngDims.width,   // Breite des skalierten Bildes
+            height: pngDims.height  // Höhe des skalierten Bildes
+        });
+
+    
+} catch (error) {
+        console.error('Fehler beim Einbetten des PNG-Bildes:', error);
+    }
+} else {
+    console.log('Keine Unterschrift gefunden.');
+}
+
 
             // PDF speichern
             const pdfBytes = await pdfDoc.save();
