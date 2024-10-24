@@ -36,6 +36,7 @@
             // Definierte Ränder für das gesamte Dokument
             const marginLeft = 50;
             const marginTop = 750;
+	    const fieldspace = 265; //Abstand zwischen den bearbeitbaren Feldern
             const textWidth = page.getWidth() - 2 * marginLeft; // Breite des Textbereichs
             let currentY = marginTop;
 
@@ -74,19 +75,19 @@
                 { name: 'Geburtsdatum', x: marginLeft , y: currentY - 60},
                 { name: 'Straße', x: marginLeft , y: currentY - 90 },
                 { name: 'PLZ/Wohnort', x: marginLeft , y: currentY - 120 },
-                { name: 'Telefon', x: marginLeft + 220, y: currentY  },
-                { name: 'E-Mail', x: marginLeft + 220 , y: currentY - 30 },
-                { name: 'Ort/Datum', x: marginLeft + 220, y: currentY - 60 },
-                { name: 'Unterschrift', x: marginLeft + 220, y: currentY - 90 }
+                { name: 'Telefon', x: marginLeft + fieldspace, y: currentY  },
+                { name: 'E-Mail', x: marginLeft + fieldspace , y: currentY - 30 },
+                { name: 'Ort/Datum', x: marginLeft + fieldspace, y: currentY - 60 },
+                { name: 'Unterschrift', x: marginLeft + fieldspace, y: currentY - 90 }
             ];
 
             // Füge bearbeitbare Textfelder hinzu
             fields.forEach(field => {
                 const inputField = pdfDoc.getForm().createTextField(field.name);
                 inputField.addToPage(page, {
-                    x: field.x + 50, // Position für das Textfeld
+                    x: field.x + 95, // Position für das Textfeld
                     y: field.y,
-                    width: 160,
+                    width: 130,
                     height: 20,
                 });
                 inputField.setFontSize(12);
@@ -119,24 +120,24 @@ Hinweis: Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, 
             });
 
             // Platz für Bankinformationen
-            currentY -= 170; // Position anpassen
+            currentY -= 200; // Position anpassen
             const bankFields = [
-                { name: 'Kontonummer', y: currentY },
-                { name: 'Kontoinhaber', y: currentY - 30 },
-                { name: 'Bankleitzahl', y: currentY - 60 },
-                { name: 'Kreditinstitut', y: currentY - 90 },
-                { name: 'IBAN', y: currentY - 120 },
-                { name: 'BIC', y: currentY - 150 },
-                { name: 'Unterschrift Kontoinhaber', y: currentY - 180 }
+                { name: 'Kontonummer', x: 0, y: currentY },
+                { name: 'Kontoinhaber', x: 0, y: currentY - 30 },
+                { name: 'Bankleitzahl', x: 0, y: currentY - 60 },
+                { name: 'Kreditinstitut', x: 0, y: currentY - 90 },
+                { name: 'IBAN', x: fieldspace, y: currentY  },
+                { name: 'BIC', x: fieldspace, y: currentY - 30 },
+                { name: 'Unterschrift Kontoinhaber', x: fieldspace, y: currentY - 60 }
             ];
 
             // Füge bearbeitbare Textfelder für Bankinformationen hinzu
             bankFields.forEach(field => {
                 const inputField = pdfDoc.getForm().createTextField(field.name);
                 inputField.addToPage(page, {
-                    x: marginLeft + 150,
+                    x: field.x + 145,
                     y: field.y,
-                    width: 200,
+                    width: 130,
                     height: 20,
                 });
                 inputField.setFontSize(12);
