@@ -14,8 +14,9 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+           
             margin: 0;
+ 	    overflow: auto;
             background-color: #f5f5f5;
         }
         h1 {
@@ -58,67 +59,69 @@
             background-color: #0056b3;
         }
         img {
+	    display: block;
             max-width: 100%;
             height: auto;
-            margin-bottom: 20px;
-            border-radius: 10px;
+            margin:0 auto;
+	    margin-bottom:20px;
+            border-radius: 20px;
+ 	    border: 3px solid #228B22; /* Fügt einen 3px breiten, dunklen Rahmen hinzu */
+	    transition: transform 0.2s ease;
         }
+        img:hover {
+            transform: scale(1.02); /* Bildvergrößerung bei Hover */
+        }
+    </style>
     </style>
 </head>
 <body>
 
     <h1>Beitrittserklärung PDF</h1>
 
-    <img src="https://scontent-fra3-2.xx.fbcdn.net/v/t39.30808-6/326392531_1839055796475810_667497308983715319_n.png?_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=7G_9qMTB1mAQ7kNvgGRN6cu&_nc_zt=23&_nc_ht=scontent-fra3-2.xx&_nc_gid=AMDSnmzYKIgqbzUe2EpszIc&oh=00_AYA5Wtm2NQY_4inKYNbiFh-qbowyM0iaFlwN8CutDt8gYA&oe=67209A4B" alt="Logo">
+    
 
     <form id="membership-form">
+<a href="https://www.facebook.com/kjneuengruen/?locale=de_DE" target="_blank">
+<img src="https://scontent-fra3-2.xx.fbcdn.net/v/t39.30808-6/326392531_1839055796475810_667497308983715319_n.png?_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=7G_9qMTB1mAQ7kNvgGRN6cu&_nc_zt=23&_nc_ht=scontent-fra3-2.xx&_nc_gid=AMDSnmzYKIgqbzUe2EpszIc&oh=00_AYA5Wtm2NQY_4inKYNbiFh-qbowyM0iaFlwN8CutDt8gYA&oe=67209A4B" alt="Logo">
+</a>
         <div class="form-group">
             <label for="vorname">Vorname:</label>
             <input type="text" id="vorname" name="vorname" required>
-        </div>
-        <div class="form-group">
+        
             <label for="name">Nachname:</label>
             <input type="text" id="name" name="name" required>
-        </div>
-        <div class="form-group">
+       
             <label for="geburtsdatum">Geburtsdatum:</label>
             <input type="date" id="geburtsdatum" name="geburtsdatum" required>
-        </div>
-        <div class="form-group">
+       
             <label for="strasse">Straße:</label>
             <input type="text" id="strasse" name="strasse" required>
-        </div>
-        <div class="form-group">
+       
             <label for="plz">PLZ/Wohnort:</label>
             <input type="text" id="plz" name="plz" required>
-        </div>
-        <div class="form-group">
+        
             <label for="telefon">Telefon:</label>
             <input type="text" id="telefon" name="telefon" required>
-        </div>
-        <div class="form-group">
+       
             <label for="email">E-Mail:</label>
             <input type="email" id="email" name="email" required>
-        </div>
-        <div class="form-group">
+      
             <label for="kontoinhaber">Kontoinhaber:</label>
             <input type="text" id="kontoinhaber" name="kontoinhaber" required>
-        </div>
-        <div class="form-group">
             <label for="iban">IBAN:</label>
             <input type="text" id="iban" name="iban" required>
-        </div>
-        <div class="form-group">
+
             <label for="bic">BIC:</label>
             <input type="text" id="bic" name="bic" required>
-        </div>
-<div class="form-group">
-            <label for="ort">Ort</label>
+        
+            <label for="ort">Aktueller Ort</label>
             <input type="text" id="ort" name="ort" required>
         </div>
 <div class="form-group">
     <label for="unterschrift">Unterschrift:</label>
     <canvas id="signature-pad" width="400" height="200" style="border: 1px solid #000;"></canvas>
+</div>
+<div class="form-group">
     <button type="button" id="clear-signature">Unterschrift löschen</button>
 </div>
 
@@ -182,30 +185,30 @@ const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}.${(c
             // Platz für persönliche Daten
             currentY -= 110;
             const fields = [
-                { name: 'Vorname', x: marginLeft, y: currentY, value: formData.get('vorname') },
-                { name: 'Name', x: marginLeft, y: currentY - 30, value: formData.get('name') },
-                { name: 'Geburtsdatum', x: marginLeft, y: currentY - 60, value: formData.get('geburtsdatum') },
-                { name: 'Straße', x: marginLeft, y: currentY - 90, value: formData.get('strasse') },
-                { name: 'PLZ/Wohnort', x: marginLeft, y: currentY - 120, value: formData.get('plz') },
-                { name: 'Telefon', x: marginLeft + fieldspace, y: currentY, value: formData.get('telefon') },
-                { name: 'E-Mail', x: marginLeft + fieldspace, y: currentY - 30, value: formData.get('email') }
+                { name: 'Vorname', x: marginLeft, y: currentY, b:0, value: formData.get('vorname') },
+                { name: 'Name', x: marginLeft, y: currentY - 30, b:0, value: formData.get('name') },
+                { name: 'Geburtsdatum', x: marginLeft, y: currentY - 60, b:0, value: formData.get('geburtsdatum') },
+                { name: 'Straße', x: marginLeft, y: currentY - 90, b:0, value: formData.get('strasse') },
+                { name: 'PLZ/Wohnort', x: marginLeft, y: currentY - 120, b:0, value: formData.get('plz') },
+                { name: 'Telefon', x: marginLeft + fieldspace, y: currentY, b:25, value: formData.get('telefon') },
+                { name: 'E-Mail', x: marginLeft + fieldspace, y: currentY - 30, b:25, value: formData.get('email') }
             ];
 
            // Füge bearbeitbare Textfelder hinzu
 for (const field of fields) {
     const inputField = pdfDoc.getForm().createTextField(field.name);
     inputField.addToPage(page, {
-        x: field.x + 105, // Position für das Textfeld
+        x: field.x + 85 - field.b, // Position für das Textfeld
         y: field.y,
-        width: 130,
+        width: 140 + field.b*2,
         height: 20,
     });
 
     // Zeichne den Namen des Feldes
     page.drawText(field.name, {
-        x: field.x,
+        x: field.x - field.b,
         y: field.y + 5,
-        size: 14,
+        size: 12,
         color: rgb(0, 0, 0),
         font: await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold)
     });
@@ -245,7 +248,7 @@ Hinweis: Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, 
                 { name: 'IBAN', x: marginLeft , y: currentY - 30, value: formData.get('iban') },
                 { name: 'BIC', x: marginLeft + fieldspace, y: currentY, value: formData.get('bic') },
 		{ name: 'Ort', x: marginLeft + fieldspace, y: currentY - 30, value: formData.get('ort')},
-{ name: 'Datum', x: marginLeft + fieldspace, y: currentY - 60, value: formattedDate }
+{ name: 'Datum', x: marginLeft, y: currentY - 120, value: formattedDate }
             ];
 
             // Füge bearbeitbare Textfelder hinzu
@@ -302,8 +305,8 @@ if (!signaturePad.isEmpty()) {
 
         // Zeichnen der Unterschrift (PNG-Bild) auf der gewünschten Position
         page.drawImage(pngImage, {
-            x: 150,  // X-Position auf der Seite
-            y: 100,  // Y-Position auf der Seite
+            x: 350,  // X-Position auf der Seite
+            y: 40,  // Y-Position auf der Seite
             width: pngDims.width,   // Breite des skalierten Bildes
             height: pngDims.height  // Höhe des skalierten Bildes
         });
@@ -316,6 +319,24 @@ if (!signaturePad.isEmpty()) {
     console.log('Keine Unterschrift gefunden.');
 }
 
+const xPosition = 350;
+const yPosition = 60;
+
+// Linie zeichnen
+page.drawLine({
+    start: { x: xPosition, y: yPosition + 10 }, // Linie oberhalb des Textes
+    end: { x: xPosition + 200, y: yPosition + 10 }, // 100 Pixel lange Linie
+    thickness: 1,
+    color: rgb(0, 0, 0),
+});
+
+// Text "Unterschrift" unter der Linie zeichnen
+page.drawText("Unterschrift", {
+    x: xPosition,
+    y: yPosition,
+    size: 8,
+    color: rgb(0, 0, 0),
+});
 
             // PDF speichern
             const pdfBytes = await pdfDoc.save();
