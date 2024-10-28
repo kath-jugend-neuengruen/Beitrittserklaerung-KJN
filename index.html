@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beitrittserklärung PDF</title>
+<link rel="icon" href="https://scontent-fra3-2.xx.fbcdn.net/v/t39.30808-6/326392531_1839055796475810_667497308983715319_n.png?_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=7G_9qMTB1mAQ7kNvgGRN6cu&_nc_zt=23&_nc_ht=scontent-fra3-2.xx&_nc_gid=AMDSnmzYKIgqbzUe2EpszIc&oh=00_AYA5Wtm2NQY_4inKYNbiFh-qbowyM0iaFlwN8CutDt8gYA&oe=67209A4B" type="image/x-icon">
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 
@@ -19,7 +21,18 @@
  	    overflow: auto;
             background-color: #f5f5f5;
         }
-
+.scrollable-text {
+            width: 96%;
+            max-width: 100%;
+            height: 100px;
+	    margin:0 auto;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            resize: none;
+            overflow-y: scroll;
+            font-size: 10px;
+        }
         h1 {
             font-size: 30px;
             margin-bottom: 10px;
@@ -60,36 +73,43 @@
             border: 1px solid #ccc;
             font-size: 14px;
         }
-        button1 {
-            margin-top: 20px;
-            padding: 12px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            background-color: red;
-            color: white;
-            cursor: pointer;
-        }
- button2 {
-            margin-top: 20px;
-            padding: 12px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            background-color: orange;
-            color: white;
-            cursor: pointer;
-        }
-button3 {
-            margin-top: 20px;
-            padding: 12px 20px;
-            font-size: 16px;
-            border: none;
-            border-radius: 5px;
-            background-color: green;
-            color: white;
-            cursor: pointer;
-        }
+        
+.button-container {
+    display: flex; /* Verwenden von Flexbox */
+    flex-wrap: wrap; /* Erlaubt Zeilenumbruch */
+    justify-content: center; /* Zentriert die Buttons */
+    gap: 10px; /* Abstand zwischen den Buttons */
+}
+
+.button-container button {
+    margin-top: 20px;
+    padding: 12px 20px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    color: white;
+    cursor: pointer;
+}
+
+#clear-signature {
+    background-color: red;
+}
+
+#download-pdf {
+    background-color: orange;
+}
+
+#emailButton {
+    background-color: green;
+}
+
+@media (max-width: 768px) {
+    .button-container {
+        flex-direction: column; /* Ändert die Anordnung auf Spalte bei schmalen Bildschirmen */
+        align-items: center; /* Zentriert die Buttons in der Spalte */
+    }
+}
+
         button:hover {
             background-color: #0056b3;
         }
@@ -122,14 +142,27 @@ button3 {
 <body>
  <form id="membership-form">
     <h1>Beitrittserklärung PDF</h1>
-
     
 
     
 <a href="https://www.facebook.com/kjneuengruen/?locale=de_DE" target="_blank">
 <img src="https://scontent-fra3-2.xx.fbcdn.net/v/t39.30808-6/326392531_1839055796475810_667497308983715319_n.png?_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=7G_9qMTB1mAQ7kNvgGRN6cu&_nc_zt=23&_nc_ht=scontent-fra3-2.xx&_nc_gid=AMDSnmzYKIgqbzUe2EpszIc&oh=00_AYA5Wtm2NQY_4inKYNbiFh-qbowyM0iaFlwN8CutDt8gYA&oe=67209A4B" alt="Logo">
 </a>
-        <div class="form-group">
+
+
+<div class="form-group">
+
+<textarea class="scrollable-text" readonly>
+Hiermit erkläre ich meinen Beitritt zur Kath. Jugend Neuengrün-Schlegelshaid und bin gleichzeitig damit einverstanden, dass der Verein meine unten angegebenen Daten, wie z.B. Vor- und Zuname, Geburtstag usw., sowie Ehrungen/Auszeichnungen und Fotografien, veröffentlichen darf. Dieser Einwilligung kann ich jederzeit widersprechen.
+
+Gläubiger-ID: DE50ZZZ00000431398   Mandatsreferenznummer: Mitgliedsnummer-?
+
+Ich ermächtige die Kath. Jugend Neuengrün-Schlegelshaid den Jahresbeitrag von momentan 7.-- € (Fälligkeit: jeweils Anfang Januar) von meinem Konto mittels Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die von der Kath. Jugend Neuengrün-Schlegelshaid, auf mein Konto gezogenen Lastschriften einzulösen.
+
+Hinweis: Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, die Erstattung des belasteten Betrages verlangen. Es gelten dabei die mit meinem Kreditinstitut vereinbarten Bedingungen.
+    </textarea>
+
+        
             <label for="vorname">Vorname:</label>
             <input type="text" id="vorname" name="vorname" required>
         
@@ -171,15 +204,14 @@ button3 {
 </div>
 <p></p>
 <div id="error-message" class="error-message"></div>
-<div class="form-group">
-    <button1 type="button" id="clear-signature">Unterschrift löschen</button1>
 
-
-    <button2 type="button" id="download-pdf">PDF herunterladen</button2>
-    
-    <button3 id="emailButton">KJN E-Mail senden</button3>
-    <h1>Beitrittserklärung senden/ PDF angängen!!</h1>
-    </div>
+    <div class="button-container">
+    <button type="button" id="clear-signature">Unterschrift löschen</button>
+    <button type="button" id="download-pdf">PDF herunterladen</button>
+    <button type="button" id="emailButton">KJN E-Mail senden</button>
+</div>
+<h1>Alles Ausfüllen -->PDF herunterladen-->Email mit PDF versenden</h1>
+  
     </form>
 
 <script>
