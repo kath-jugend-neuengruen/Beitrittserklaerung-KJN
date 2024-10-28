@@ -19,9 +19,11 @@
  	    overflow: auto;
             background-color: #f5f5f5;
         }
+
         h1 {
-            font-size: 24px;
+            font-size: 30px;
             margin-bottom: 10px;
+	    text-align: center;
         }
         form {
             background-color: white;
@@ -31,8 +33,21 @@
             width: 100%;
             max-width: 600px;
         }
+
+ @media (max-width: 768px) {  /* Für Geräte mit einer Bildschirmbreite von 768px oder kleiner */
+        form {
+            width: 90%; /* Setzt die Breite des Formulars auf 90% der Bildschirmbreite */
+        }
+ .signature-container {
+            width: 90%; /* Mobilgerätebreite auf 90% */
+        }
+    }
+
         .form-group {
             margin-bottom: 15px;
+ 	width: 100%;
+        max-width: 90%; /* Begrenzung auf 90% der Displaybreite */
+        margin: 0 auto;
         }
         label {
             display: block;
@@ -45,13 +60,33 @@
             border: 1px solid #ccc;
             font-size: 14px;
         }
-        button {
+        button1 {
             margin-top: 20px;
             padding: 12px 20px;
             font-size: 16px;
             border: none;
             border-radius: 5px;
-            background-color: #007bff;
+            background-color: red;
+            color: white;
+            cursor: pointer;
+        }
+ button2 {
+            margin-top: 20px;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: orange;
+            color: white;
+            cursor: pointer;
+        }
+button3 {
+            margin-top: 20px;
+            padding: 12px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            background-color: green;
             color: white;
             cursor: pointer;
         }
@@ -71,16 +106,26 @@
         img:hover {
             transform: scale(1.02); /* Bildvergrößerung bei Hover */
         }
+#result {
+            font-weight: bold;
+            color: red;
+        }
+.error-message {
+            color: red;
+            margin-top: 15px;
+            font-weight: bold;
+	    margin-bottom:20px;
+        }
     </style>
     </style>
 </head>
 <body>
-
+ <form id="membership-form">
     <h1>Beitrittserklärung PDF</h1>
 
     
 
-    <form id="membership-form">
+    
 <a href="https://www.facebook.com/kjneuengruen/?locale=de_DE" target="_blank">
 <img src="https://scontent-fra3-2.xx.fbcdn.net/v/t39.30808-6/326392531_1839055796475810_667497308983715319_n.png?_nc_cat=104&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=7G_9qMTB1mAQ7kNvgGRN6cu&_nc_zt=23&_nc_ht=scontent-fra3-2.xx&_nc_gid=AMDSnmzYKIgqbzUe2EpszIc&oh=00_AYA5Wtm2NQY_4inKYNbiFh-qbowyM0iaFlwN8CutDt8gYA&oe=67209A4B" alt="Logo">
 </a>
@@ -94,7 +139,7 @@
             <label for="geburtsdatum">Geburtsdatum:</label>
             <input type="date" id="geburtsdatum" name="geburtsdatum" required>
        
-            <label for="strasse">Straße:</label>
+            <label for="strasse">Straße/Hausnummer:</label>
             <input type="text" id="strasse" name="strasse" required>
        
             <label for="plz">PLZ/Wohnort:</label>
@@ -108,46 +153,160 @@
       
             <label for="kontoinhaber">Kontoinhaber:</label>
             <input type="text" id="kontoinhaber" name="kontoinhaber" required>
-            <label for="iban">IBAN:</label>
-            <input type="text" id="iban" name="iban" required>
 
-            <label for="bic">BIC:</label>
+            <label for="iban">IBAN:    (Befindet sich auf deiner Bankkarte)</label>
+            <input type="text" id="iban" name="iban" required>
+            <div id="result"></div>
+
+            <label for="bic">BIC:    (Befindet sich auf deiner Bankkarte)</label>
             <input type="text" id="bic" name="bic" required>
+            
         
             <label for="ort">Aktueller Ort</label>
             <input type="text" id="ort" name="ort" required>
         </div>
 <div class="form-group">
     <label for="unterschrift">Unterschrift:</label>
-    <canvas id="signature-pad" width="400" height="200" style="border: 1px solid #000;"></canvas>
+    <canvas id="signature-pad" style="width: 100%; border: 1px solid #000;"></canvas>
 </div>
+<p></p>
+<div id="error-message" class="error-message"></div>
 <div class="form-group">
-    <button type="button" id="clear-signature">Unterschrift löschen</button>
-</div>
+    <button1 type="button" id="clear-signature">Unterschrift löschen</button1>
 
-        <button type="button" id="download-pdf">PDF herunterladen</button>
+
+    <button2 type="button" id="download-pdf">PDF herunterladen</button2>
+    
+    <button3 id="emailButton">KJN E-Mail senden</button3>
+    <h1>Beitrittserklärung senden/ PDF angängen!!</h1>
+    </div>
     </form>
 
-    <script>
+<script>
 const canvas = document.getElementById('signature-pad');
 const signaturePad = new SignaturePad(canvas);
 
-// Button, um die Unterschrift zu löschen
-document.getElementById('clear-signature').addEventListener('click', () => {
-    signaturePad.clear();
-});
+
+// Function to check if all required fields are filled
+function areAllFieldsFilled() {
+    const requiredFields = document.querySelectorAll('#membership-form [required]');
+    return Array.from(requiredFields).every(field => field.value.trim() !== '');
+}
+
+// Function to show error message
+function showErrorMessage(message) {
+    const errorMessageDiv = document.getElementById('error-message');
+    errorMessageDiv.textContent = message;
+}
+
+// Function to hide error message
+function hideErrorMessage() {
+    const errorMessageDiv = document.getElementById('error-message');
+    errorMessageDiv.textContent = '';
+}
+
+
+// Funktion zur IBAN-Überprüfung
+        function validateIBAN(iban) {
+            iban = iban.toUpperCase().replace(/\s/g, '');
+
+            if (iban.length !== 22) {
+                return "Ungültige IBAN-Länge.";
+
+            }
+
+            const rearrangedIban = iban.slice(4) + iban.slice(0, 4);
+
+            const numericIban = rearrangedIban.split('').map(char => {
+                if (/[A-Z]/.test(char)) {
+                    return char.charCodeAt(0) - 55;
+                } else {
+                    return char;
+                }
+            }).join('');
+
+            const remainder = BigInt(numericIban) % BigInt(97);
+
+            return remainder === 1n ? "Die IBAN ist korrekt." : "Die IBAN ist nicht korrekt.";
+        }
+
+ 	    
+
+// Temporary storage for saved signature
+        let savedSignatureDataURL = null;
+
+        // Function to save signature as DataURL
+        function saveSignature() {
+            if (!signaturePad.isEmpty()) {
+                savedSignatureDataURL = signaturePad.toDataURL();
+            }
+        }
+
+        // Function to restore saved signature after resizing
+        function restoreSignature() {
+            if (savedSignatureDataURL) {
+                const ctx = canvas.getContext('2d');
+                const img = new Image();
+                img.src = savedSignatureDataURL;
+                img.onload = () => ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            }
+        }
+
+        // Clear signature button event listener
+        document.getElementById('clear-signature').addEventListener('click', () => {
+            signaturePad.clear();
+            savedSignatureDataURL = null;
+        });
+
+ function resizeCanvas() {
+    const ratio = Math.max(window.devicePixelRatio || 1, 1);
+    const context = canvas.getContext("2d");
+    const savedData = signaturePad.toDataURL(); // Speichere Signatur
+    
+    canvas.width = canvas.offsetWidth * ratio;
+    canvas.height = canvas.width/2;
+    context.scale(ratio, ratio);
+
+    // Lade gespeicherte Signatur, falls vorhanden
+    if (savedData) {
+        const image = new Image();
+        image.src = savedData;
+        image.onload = () => context.drawImage(image, 0, 0, canvas.width / ratio, canvas.height / ratio);
+    }
+}
+
+ // Resize and save signature on resize and scroll events
+        window.addEventListener("resize", resizeCanvas);
+        window.addEventListener("scroll", saveSignature);
+        resizeCanvas(); // Initial setup
+
+
+
 
         document.getElementById('download-pdf').addEventListener('click', async () => {
-            const { PDFDocument, rgb } = PDFLib;
+            
+            const formData = new FormData(document.getElementById('membership-form'));
+
+	    const ibanToCheck = document.getElementById('iban').value;
+            const result = validateIBAN(ibanToCheck);
+            document.getElementById('result').innerText = result; // Ergebnis anzeigen
+
+if (!areAllFieldsFilled()) {
+        showErrorMessage('Bitte füllen Sie alle erforderlichen Felder aus.');
+        return; // Stop execution if fields are not filled
+    }
+ hideErrorMessage(); // Hide error message if fields are filled
+          
+  if (result === "Die IBAN ist korrekt.") {
+
+         const { PDFDocument, rgb } = PDFLib;
             const pdfDoc = await PDFDocument.create();
             const page = pdfDoc.addPage([600, 800]);
 
-            const formData = new FormData(document.getElementById('membership-form'));
-
-            
 	// Aktuelles Datum im Format dd.mm.yyyy
 const currentDate = new Date();
 const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}.${(currentDate.getMonth() + 1).toString().padStart(2, '0')}.${currentDate.getFullYear()}`;
+
 // Definierte Ränder für das gesamte Dokument
             const marginLeft = 50;
             const marginTop = 750;
@@ -188,7 +347,7 @@ const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}.${(c
                 { name: 'Vorname', x: marginLeft, y: currentY, b:0, value: formData.get('vorname') },
                 { name: 'Name', x: marginLeft, y: currentY - 30, b:0, value: formData.get('name') },
                 { name: 'Geburtsdatum', x: marginLeft, y: currentY - 60, b:0, value: formData.get('geburtsdatum') },
-                { name: 'Straße', x: marginLeft, y: currentY - 90, b:0, value: formData.get('strasse') },
+                { name: 'Straße/Haus-Nr', x: marginLeft, y: currentY - 90, b:0, value: formData.get('strasse') },
                 { name: 'PLZ/Wohnort', x: marginLeft, y: currentY - 120, b:0, value: formData.get('plz') },
                 { name: 'Telefon', x: marginLeft + fieldspace, y: currentY, b:25, value: formData.get('telefon') },
                 { name: 'E-Mail', x: marginLeft + fieldspace, y: currentY - 30, b:25, value: formData.get('email') }
@@ -198,7 +357,7 @@ const formattedDate = `${currentDate.getDate().toString().padStart(2, '0')}.${(c
 for (const field of fields) {
     const inputField = pdfDoc.getForm().createTextField(field.name);
     inputField.addToPage(page, {
-        x: field.x + 85 - field.b, // Position für das Textfeld
+        x: field.x + 95 - field.b, // Position für das Textfeld
         y: field.y,
         width: 140 + field.b*2,
         height: 20,
@@ -206,7 +365,7 @@ for (const field of fields) {
 
     // Zeichne den Namen des Feldes
     page.drawText(field.name, {
-        x: field.x - field.b,
+        x: field.x,
         y: field.y + 5,
         size: 12,
         color: rgb(0, 0, 0),
@@ -247,8 +406,8 @@ Hinweis: Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, 
                 { name: 'Kontoinhaber', x: marginLeft, y: currentY, value: formData.get('kontoinhaber') },
                 { name: 'IBAN', x: marginLeft , y: currentY - 30, value: formData.get('iban') },
                 { name: 'BIC', x: marginLeft + fieldspace, y: currentY, value: formData.get('bic') },
-		{ name: 'Ort', x: marginLeft + fieldspace, y: currentY - 30, value: formData.get('ort')},
-{ name: 'Datum', x: marginLeft, y: currentY - 120, value: formattedDate }
+		{ name: 'Ort', x: marginLeft , y: currentY - 110, value: formData.get('ort')},
+{ name: 'Datum', x: marginLeft, y: currentY - 140, value: formattedDate }
             ];
 
             // Füge bearbeitbare Textfelder hinzu
@@ -305,10 +464,10 @@ if (!signaturePad.isEmpty()) {
 
         // Zeichnen der Unterschrift (PNG-Bild) auf der gewünschten Position
         page.drawImage(pngImage, {
-            x: 350,  // X-Position auf der Seite
+            x: 340,  // X-Position auf der Seite
             y: 40,  // Y-Position auf der Seite
-            width: pngDims.width,   // Breite des skalierten Bildes
-            height: pngDims.height  // Höhe des skalierten Bildes
+            width: 250,   // Breite des skalierten Bildes
+            height: 125  // Höhe des skalierten Bildes
         });
 
     
@@ -338,16 +497,58 @@ page.drawText("Unterschrift", {
     color: rgb(0, 0, 0),
 });
 
+const vorname = formData.get('vorname'); // Annahme, dass formData die Daten enthält
+const name = formData.get('name');
+
+
             // PDF speichern
             const pdfBytes = await pdfDoc.save();
             const blob = new Blob([pdfBytes], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);
+
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'Beitrittserklaerung.pdf';
+            a.download = `Beitrittserklaerung-${vorname || 'Vorname'}-${name || 'Nachname'}-${formattedDate}.pdf`; // Mit Datum
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+}
+        });
+
+document.getElementById('emailButton').addEventListener('click', function() {
+
+if (!areAllFieldsFilled()) {
+        showErrorMessage('Bitte füllen Sie alle erforderlichen Felder aus.');
+        return; // Stop execution if fields are not filled
+    }
+ hideErrorMessage(); // Hide error message if fields are filled
+
+const ibanToCheck = document.getElementById('iban').value;
+            const result = validateIBAN(ibanToCheck);
+            document.getElementById('result').innerText = result; // Ergebnis anzeigen
+
+if (result === "Die IBAN ist korrekt.") {
+
+const vorname = document.getElementById('vorname').value; // oder wo auch immer du die Werte herbekommst
+const name = document.getElementById('name').value;
+
+            const email = "christopher@online-jack.de"; // Zieladresse hier eintragen
+            const subject = "Beitrittserklärung";
+            const body = `
+**${vorname || 'Vorname'}, Bitte vergessen Sie nicht, die automatisch erstellte PDF-Datei beizufügen!**
+ 
+Hallo liebes KJN-Team,
+
+anbei finden Sie meine Beitrittserklärung im PDF-Format. 
+Ich freue mich auf eine positive Rückmeldung.
+
+Mit freundlichen Grüßen, 
+${vorname || 'Vorname'} ${name || 'Nachname'}`;
+
+
+            // E-Mail-Link erstellen
+            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+}
         });
     </script>
 
