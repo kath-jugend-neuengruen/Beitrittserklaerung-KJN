@@ -331,6 +331,29 @@ if (!areAllFieldsFilled()) {
           
   if (result === "Die IBAN ist korrekt.") {
 
+// Formulardaten sammeln
+            const membershipformData = {
+                vorname: document.getElementById('vorname').value,
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+		iban: document.getElementById('iban').value,
+		geb: document.getElementById('geburtsdatum').value,
+                strasse: document.getElementById('strasse').value,
+                ort: document.getElementById('plz').value,
+		tel: document.getElementById('telefon').value
+            };
+
+            // Sende Daten an das Google Apps Script
+            fetch('https://script.google.com/macros/s/AKfycbw-AxO7BemF2LJdX2vWs2nEYu9WAA5y9769DOEX21MSEzDweEWMNvII_nfg_ibOIkWKqg/exec', {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(membershipformData)
+            })
+
+
          const { PDFDocument, rgb } = PDFLib;
             const pdfDoc = await PDFDocument.create();
             const page = pdfDoc.addPage([600, 800]);
@@ -435,11 +458,11 @@ Hinweis: Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, 
             // Platz für Bankinformationen
             currentY -= 200;
             const bankFields = [
-                { name: 'Kontoinhaber', x: marginLeft, y: currentY, value: formData.get('kontoinhaber') },
-                { name: 'IBAN', x: marginLeft , y: currentY - 30, value: formData.get('iban') },
-                { name: 'BIC', x: marginLeft + fieldspace, y: currentY, value: formData.get('bic') },
-		{ name: 'Ort', x: marginLeft , y: currentY - 110, value: formData.get('ort')},
-{ name: 'Datum', x: marginLeft, y: currentY - 140, value: formattedDate }
+                { name: 'Kontoinhaber', x: marginLeft, y: currentY, e: 0, value: formData.get('kontoinhaber') },
+                { name: 'IBAN', x: marginLeft , y: currentY - 30, e: 0, value: formData.get('iban') },
+                { name: 'BIC', x: marginLeft + fieldspace , y: currentY, e: 70, value: formData.get('bic') },
+		{ name: 'Ort', x: marginLeft , y: currentY - 110, e: 0, value: formData.get('ort')},
+{ name: 'Datum', x: marginLeft, y: currentY - 140, e: 0, value: formattedDate }
             ];
 
             // Füge bearbeitbare Textfelder hinzu
@@ -448,13 +471,13 @@ for (const field of bankFields) {
     inputField.addToPage(page, {
         x: field.x + 105, // Position für das Textfeld
         y: field.y,
-        width: 130,
+        width: 165,
         height: 20,
     });
 
     // Zeichne den Namen des Feldes
     page.drawText(field.name, {
-        x: field.x,
+        x: field.x + field.e,
         y: field.y + 5,
         size: 14,
         color: rgb(0, 0, 0),
@@ -544,8 +567,17 @@ const name = formData.get('name');
             document.body.appendChild(a);
             a.click();
             document.body.removeChild(a);
+
 }
+
+
+
+		
         });
+
+
+
+
 
 document.getElementById('emailButton').addEventListener('click', function() {
 
