@@ -469,9 +469,9 @@ Hinweis: Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, 
 for (const field of bankFields) {
     const inputField = pdfDoc.getForm().createTextField(field.name);
     inputField.addToPage(page, {
-        x: field.x + 105, // Position für das Textfeld
+        x: field.x + 100, // Position für das Textfeld
         y: field.y,
-        width: 165,
+        width: 175,
         height: 20,
     });
 
