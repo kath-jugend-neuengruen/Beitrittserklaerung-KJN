@@ -73,7 +73,21 @@
             border: 1px solid #ccc;
             font-size: 14px;
         }
-        
+
+	 .download-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007BFF;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .download-button:hover {
+            background-color: #0056b3;
+        }
+	    
 .button-container {
     display: flex; /* Verwenden von Flexbox */
     flex-wrap: wrap; /* Erlaubt Zeilenumbruch */
@@ -148,8 +162,11 @@
 <a href="https://www.facebook.com/kjneuengruen/?locale=de_DE" target="_blank">
 <img src="https://github.com/kath-jugend-neuengruen/Beitrittserklaerung-KJN/blob/main/470207678_3926429560975333_2043178117568937116_n.jpg?raw=true" alt="Logo">
 </a>
-
-
+	 
+    <h1>Download ICS File</h1>
+    <!-- Button zum Herunterladen der Datei -->
+    <a href="KJNeuengrün_Termine2025.ics" download class="download-button">Download Kalenderdatei</a>
+   
 <div class="form-group">
 
 <textarea class="scrollable-text" readonly>
