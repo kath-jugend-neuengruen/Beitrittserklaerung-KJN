@@ -16,26 +16,27 @@
             flex-direction: column;
             align-items: center;
             margin: 0;
-            overflow: auto;
+            padding: 20px;
             background-color: #f5f5f5;
         }
         .scrollable-text {
-            width: 96%;
-            max-width: 100%;
+            width: 100%;
             height: 100px;
-            margin: 0 auto;
+            margin: 0 0 15px 0;
             padding: 10px;
             border: 1px solid #ccc;
             border-radius: 8px;
             resize: none;
             overflow-y: scroll;
-            font-size: 10px;
+            font-size: 12px;
+            box-sizing: border-box;
         }
         h1 {
-            font-size: 30px;
+            font-size: 24px;
             margin-bottom: 10px;
             text-align: center;
         }
+        h2 { font-size: 18px; margin-top: 20px; margin-bottom: 10px; color: #333; }
         form {
             background-color: white;
             border-radius: 15px;
@@ -43,93 +44,137 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             width: 100%;
             max-width: 600px;
+            box-sizing: border-box;
         }
-        @media (max-width: 768px) {
-            form { width: 90%; }
-            .signature-container { width: 90%; }
+        .form-group { margin-bottom: 15px; width: 100%; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px;}
+        input { 
+            width: 100%; 
+            padding: 10px; 
+            border-radius: 5px; 
+            border: 1px solid #ccc; 
+            font-size: 14px; 
+            box-sizing: border-box;
+            margin-bottom: 10px;
         }
-        .form-group { margin-bottom: 15px; width: 100%; max-width: 90%; margin: 0 auto; }
-        label { display: block; margin-bottom: 5px; }
-        input, textarea { width: calc(100% - 20px); padding: 10px; border-radius: 5px; border: 1px solid #ccc; font-size: 14px; }
-        .button-containers { display: flex; justify-content: center; align-items: center; margin-bottom:20px; height: 100%; }
-        .download-button { display: inline-block; padding: 10px 20px; background-color: #007BFF; color: white; text-decoration: none; border-radius: 5px; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background-color 0.3s ease; }
+        .button-containers { display: flex; justify-content: center; align-items: center; margin-bottom:20px; }
+        .download-button { 
+            display: inline-block; padding: 10px 20px; background-color: #007BFF; 
+            color: white; text-decoration: none; border-radius: 5px; font-size: 16px; 
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background-color 0.3s ease; 
+        }
         .download-button:hover { background-color: #0056b3; }
-        .button-container { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; }
-        .button-container button { margin-top: 20px; padding: 12px 20px; font-size: 16px; border: none; border-radius: 5px; color: white; cursor: pointer; }
-        #clear-signature { background-color: red; }
-        #download-pdf { background-color: orange; }
-        #emailButton { background-color: green; }
-        @media (max-width: 768px) {
-            .button-container { flex-direction: column; align-items: center; }
+        
+        .button-container { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
+        .button-container button { 
+            padding: 12px 20px; font-size: 16px; border: none; border-radius: 5px; 
+            color: white; cursor: pointer; font-weight: bold;
+            transition: opacity 0.2s ease;
         }
-        button:hover { background-color: #0056b3; }
-        img { display: block; max-width: 30%; height: auto; margin:0 auto 20px auto; border-radius: 20px; border: 3px solid #228B22; transition: transform 0.2s ease; }
-        img:hover { transform: scale(1.02); }
-        #result { font-weight: bold; color: red; }
-        .error-message { color: red; margin-top: 15px; font-weight: bold; margin-bottom:20px; }
+        .button-container button:hover { opacity: 0.8; }
+        #clear-signature { background-color: #dc3545; }
+        #download-pdf { background-color: #fd7e14; }
+        #emailButton { background-color: #28a745; }
+        
+        @media (min-width: 600px) {
+            .button-container { flex-direction: row; justify-content: center; flex-wrap: wrap; }
+            .button-container button { flex: 1; min-width: 150px; }
+        }
+
+        img.logo { display: block; max-width: 150px; height: auto; margin:0 auto 20px auto; border-radius: 20px; border: 3px solid #228B22; transition: transform 0.2s ease; }
+        img.logo:hover { transform: scale(1.02); }
+        #result { font-weight: bold; color: #dc3545; margin-bottom: 10px; font-size: 14px; }
+        .error-message { color: #dc3545; margin-top: 15px; font-weight: bold; text-align: center; }
     </style>
 </head>
 <body>
     <form id="membership-form">
         <h1>Beitrittserklärung KJN</h1>
         <a href="https://www.facebook.com/kjneuengruen/?locale=de_DE" target="_blank">
-            <img src="https://github.com/kath-jugend-neuengruen/Beitrittserklaerung-KJN/blob/main/470207678_3926429560975333_2043178117568937116_n.jpg?raw=true" alt="Logo">
+            <img class="logo" src="https://github.com/kath-jugend-neuengruen/Beitrittserklaerung-KJN/blob/main/470207678_3926429560975333_2043178117568937116_n.jpg?raw=true" alt="Logo">
         </a>
 
-        <h1>Alle Veranstaltungen hier</h1>
         <div class="button-containers">
-            <a href="KJNeuengrün_Termine2025.ics" download class="download-button">Veranstaltungskalender</a>
+            <a href="KJNeuengrün_Termine2025.ics" download class="download-button">📅 Veranstaltungskalender 2025</a>
         </div>
 
         <div class="form-group">
-            <textarea class="scrollable-text" readonly>
-Hiermit erkläre ich meinen Beitritt zur Kath. Jugend Neuengrün-Schlegelshaid...
-            </textarea>
+            <textarea class="scrollable-text" readonly>Hiermit erkläre ich meinen Beitritt zur Kath. Jugend Neuengrün-Schlegelshaid. Ich erkenne die Satzung des Vereins an und bin damit einverstanden, dass der Mitgliedsbeitrag per SEPA-Basislastschrift von meinem Konto eingezogen wird.</textarea>
 
+            <h2>Persönliche Daten</h2>
             <label for="vorname">Vorname:</label>
             <input type="text" id="vorname" name="vorname" required>
+            
             <label for="name">Nachname:</label>
             <input type="text" id="name" name="name" required>
+            
             <label for="geburtsdatum">Geburtsdatum:</label>
             <input type="date" id="geburtsdatum" name="geburtsdatum" required>
-            <label for="strasse">Straße/Hausnummer:</label>
+            
+            <label for="strasse">Straße / Hausnummer:</label>
             <input type="text" id="strasse" name="strasse" required>
-            <label for="plz">PLZ/Wohnort:</label>
+            
+            <label for="plz">PLZ / Wohnort:</label>
             <input type="text" id="plz" name="plz" required>
+            
             <label for="telefon">Telefon:</label>
             <input type="text" id="telefon" name="telefon" required>
+            
             <label for="email">E-Mail:</label>
             <input type="email" id="email" name="email" required>
+            
+            <h2>Bankverbindung (SEPA-Lastschriftmandat)</h2>
             <label for="kontoinhaber">Kontoinhaber:</label>
             <input type="text" id="kontoinhaber" name="kontoinhaber" required>
+            
             <label for="iban">IBAN:</label>
             <input type="text" id="iban" name="iban" required>
             <div id="result"></div>
+            
             <label for="bic">BIC:</label>
             <input type="text" id="bic" name="bic" required>
+            
+            <h2>Unterschrift</h2>
             <label for="ort">Aktueller Ort:</label>
-            <input type="text" id="ort" name="ort" required>
+            <input type="text" id="ort" name="ort" required placeholder="z.B. Neuengrün">
         </div>
 
         <div class="form-group">
-            <label for="unterschrift">Unterschrift:</label>
-            <canvas id="signature-pad" style="width: 100%; border: 1px solid #000;"></canvas>
+            <label for="unterschrift">Bitte hier unterschreiben:</label>
+            <canvas id="signature-pad" style="width: 100%; height: 200px; border: 1px solid #000; border-radius: 5px; background-color: #fff; touch-action: none;"></canvas>
         </div>
 
         <div id="error-message" class="error-message"></div>
 
         <div class="button-container">
-            <button type="button" id="clear-signature">Unterschrift löschen</button>
-            <button type="button" id="download-pdf">PDF herunterladen</button>
-            <button type="button" id="emailButton">KJN E-Mail senden</button>
+            <button type="button" id="clear-signature">🗑 Unterschrift löschen</button>
+            <button type="button" id="download-pdf">📥 PDF generieren</button>
+            <button type="button" id="emailButton">✉️ PDF per E-Mail senden</button>
         </div>
 
-        <h1>Alles Ausfüllen → PDF herunterladen → Email mit PDF versenden</h1>
+        <p style="text-align:center; font-size:12px; margin-top:20px; color:#666;">
+            1. Alles ausfüllen → 2. PDF generieren → 3. E-Mail Programm öffnen
+        </p>
     </form>
 
     <script>
         const canvas = document.getElementById('signature-pad');
-        const signaturePad = new SignaturePad(canvas);
+        
+        // Unterschriften-Pad mit weißem Hintergrund initialisieren (wichtig für JPEG-Kompression)
+        const signaturePad = new SignaturePad(canvas, {
+            backgroundColor: 'rgb(255, 255, 255)' 
+        });
+
+        // Signatur-Canvas responsiv anpassen
+        function resizeCanvas() {
+            const ratio = Math.max(window.devicePixelRatio || 1, 1);
+            canvas.width = canvas.offsetWidth * ratio;
+            canvas.height = canvas.offsetHeight * ratio;
+            canvas.getContext("2d").scale(ratio, ratio);
+            signaturePad.clear(); // Pad leeren nach Resize, um Verzerrungen zu vermeiden
+        }
+        window.addEventListener("resize", resizeCanvas);
+        resizeCanvas();
 
         function areAllFieldsFilled() {
             const requiredFields = document.querySelectorAll('#membership-form [required]');
@@ -146,126 +191,177 @@ Hiermit erkläre ich meinen Beitritt zur Kath. Jugend Neuengrün-Schlegelshaid..
 
         function validateIBAN(iban) {
             iban = iban.toUpperCase().replace(/\s/g, '');
-            if (iban.length !== 22) return "Ungültige IBAN-Länge.";
+            if (iban.length !== 22) return "Ungültige IBAN-Länge (muss 22 Zeichen haben).";
             const rearrangedIban = iban.slice(4) + iban.slice(0, 4);
             const numericIban = rearrangedIban.split('').map(char => /[A-Z]/.test(char) ? char.charCodeAt(0)-55 : char).join('');
-            return BigInt(numericIban) % 97n === 1n ? "Die IBAN ist korrekt." : "Die IBAN ist nicht korrekt.";
+            return BigInt(numericIban) % 97n === 1n ? "Korrekt" : "Die IBAN ist fehlerhaft.";
         }
-
-        // Signatur-Canvas resize
-        function resizeCanvas() {
-            const ratio = Math.max(window.devicePixelRatio || 1, 1);
-            const ctx = canvas.getContext("2d");
-            const savedData = signaturePad.toDataURL();
-            canvas.width = canvas.offsetWidth * ratio;
-            canvas.height = canvas.width/2;
-            ctx.scale(ratio, ratio);
-            if (savedData) {
-                const img = new Image();
-                img.src = savedData;
-                img.onload = () => ctx.drawImage(img, 0, 0, canvas.width/ratio, canvas.height/ratio);
-            }
-        }
-        window.addEventListener("resize", resizeCanvas);
-        resizeCanvas();
 
         document.getElementById('clear-signature').addEventListener('click', () => {
             signaturePad.clear();
         });
 
+        // PDF Generierung
         document.getElementById('download-pdf').addEventListener('click', async () => {
             const formData = new FormData(document.getElementById('membership-form'));
             const ibanToCheck = document.getElementById('iban').value;
-            const result = validateIBAN(ibanToCheck);
-            document.getElementById('result').innerText = result;
+            const validationResult = validateIBAN(ibanToCheck);
+            
+            if (validationResult !== "Korrekt") {
+                document.getElementById('result').innerText = validationResult;
+                return;
+            } else {
+                document.getElementById('result').innerText = '';
+            }
 
-            if (!areAllFieldsFilled()) { showErrorMessage('Bitte füllen Sie alle erforderlichen Felder aus.'); return; }
+            if (!areAllFieldsFilled()) { 
+                showErrorMessage('Bitte füllen Sie alle erforderlichen Felder aus.'); 
+                return; 
+            }
+            if (signaturePad.isEmpty()) {
+                showErrorMessage('Bitte vergessen Sie nicht zu unterschreiben.');
+                return;
+            }
             hideErrorMessage();
-            if (result !== "Die IBAN ist korrekt.") return;
 
-            // PDF erstellen
-            const { PDFDocument, rgb } = PDFLib;
+            // Lade PDF-Lib Funktionen
+            const { PDFDocument, rgb, StandardFonts } = PDFLib;
             const pdfDoc = await PDFDocument.create();
-            const page = pdfDoc.addPage([600,800]);
-            const marginLeft = 50;
-            const marginTop = 750;
-            const textWidth = page.getWidth() - 2*marginLeft;
-            let currentY = marginTop;
+            // Standard A4 Seite erstellen (595.28 x 841.89 Punkt)
+            const page = pdfDoc.addPage([595.28, 841.89]); 
+            
+            const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+            const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+            const textSize = 11;
+            let currentY = 780;
+            const leftMargin = 50;
 
+            // Datum formatieren
             const currentDate = new Date();
             const formattedDate = `${currentDate.getDate().toString().padStart(2,'0')}.${(currentDate.getMonth()+1).toString().padStart(2,'0')}.${currentDate.getFullYear()}`;
 
-            page.drawText('Kath. Jugend Neuengrün-Schlegelshaid', { x: page.getWidth()/2-150, y: currentY, size:16, color:rgb(0,0,0), font: await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold) });
+            // Kopfzeile (Titel)
+            page.drawText('Kath. Jugend Neuengrün-Schlegelshaid', { x: leftMargin, y: currentY, size: 16, font: fontBold });
+            currentY -= 25;
+            page.drawText('Beitrittserklärung', { x: leftMargin, y: currentY, size: 14, font: fontBold });
+            currentY -= 30;
+
+            // Einleitungstext
+            const introText1 = 'Hiermit erkläre ich meinen Beitritt zur Kath. Jugend Neuengrün-Schlegelshaid.';
+            const introText2 = 'Ich erkenne die Satzung des Vereins an und bin damit einverstanden, dass der Mitgliedsbeitrag';
+            const introText3 = 'per SEPA-Basislastschrift von meinem Konto eingezogen wird.';
+            page.drawText(introText1, { x: leftMargin, y: currentY, size: textSize, font: font }); currentY -= 15;
+            page.drawText(introText2, { x: leftMargin, y: currentY, size: textSize, font: font }); currentY -= 15;
+            page.drawText(introText3, { x: leftMargin, y: currentY, size: textSize, font: font }); currentY -= 40;
+
+            // Funktion zum Zeichnen einer Formular-Zeile
+            const drawRow = (label, value) => {
+                page.drawText(label + ':', { x: leftMargin, y: currentY, size: textSize, font: fontBold });
+                page.drawText(value, { x: leftMargin + 160, y: currentY, size: textSize, font: font });
+                currentY -= 20;
+            };
+
+            // Persönliche Daten
+            page.drawText('Persönliche Daten', { x: leftMargin, y: currentY, size: 13, font: fontBold, color: rgb(0, 0.4, 0) });
             currentY -= 20;
-            page.drawText('Beitrittserklärung', { x: page.getWidth()/2-70, y: currentY, size:14, color:rgb(0,0,0), font: await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold) });
+            drawRow('Vorname', formData.get('vorname'));
+            drawRow('Nachname', formData.get('name'));
+            drawRow('Geburtsdatum', formData.get('geburtsdatum'));
+            drawRow('Straße/Haus-Nr.', formData.get('strasse'));
+            drawRow('PLZ / Wohnort', formData.get('plz'));
+            drawRow('Telefon', formData.get('telefon'));
+            drawRow('E-Mail', formData.get('email'));
+            
             currentY -= 20;
-            page.drawText('Hiermit erkläre ich meinen Beitritt zur Kath. Jugend Neuengrün-Schlegelshaid...', { x: marginLeft, y: currentY, size:12, color:rgb(0,0,0), maxWidth:textWidth });
 
-            currentY -= 110;
-            const fields = [
-                { name: 'Vorname', y: currentY, value: formData.get('vorname') },
-                { name: 'Name', y: currentY-30, value: formData.get('name') },
-                { name: 'Geburtsdatum', y: currentY-60, value: formData.get('geburtsdatum') },
-                { name: 'Straße/Haus-Nr', y: currentY-90, value: formData.get('strasse') },
-                { name: 'PLZ/Wohnort', y: currentY-120, value: formData.get('plz') },
-                { name: 'Telefon', y: currentY, value: formData.get('telefon'), xOffset:255 },
-                { name: 'E-Mail', y: currentY-30, value: formData.get('email'), xOffset:255 }
-            ];
+            // Bankverbindung
+            page.drawText('Bankverbindung (SEPA-Mandat)', { x: leftMargin, y: currentY, size: 13, font: fontBold, color: rgb(0, 0.4, 0) });
+            currentY -= 20;
+            drawRow('Kontoinhaber', formData.get('kontoinhaber'));
+            drawRow('IBAN', formData.get('iban'));
+            drawRow('BIC', formData.get('bic'));
 
-            for(const f of fields){
-                const field = pdfDoc.getForm().createTextField(f.name);
-                field.addToPage(page,{x:50+(f.xOffset||0)+95-0, y:f.y, width:140, height:20});
-                page.drawText(f.name,{x:50+(f.xOffset||0),y:f.y+5,size:12,color:rgb(0,0,0), font: await pdfDoc.embedFont(PDFLib.StandardFonts.HelveticaBold)});
-                field.setFontSize(12);
-                field.setText(f.value);
-            }
+            currentY -= 40;
 
-            // Signatur einfügen
-            if(!signaturePad.isEmpty()){
-                const signatureImage = signaturePad.toDataURL();
-                const binaryString = atob(signatureImage.split(',')[1]);
-                const bytes = new Uint8Array(binaryString.length);
-                for(let i=0;i<binaryString.length;i++){ bytes[i]=binaryString.charCodeAt(i); }
-                const png = await pdfDoc.embedPng(bytes);
-                page.drawImage(png,{x:340,y:40,width:250,height:125});
-            }
+            // Ort, Datum und Unterschriftstext
+            const ort = formData.get('ort');
+            page.drawText(`${ort}, den ${formattedDate}`, { x: leftMargin, y: currentY, size: textSize, font: font });
+            
+            // Bildkompression: Wir nutzen JPEG mit 70% Qualität anstatt schwerem PNG.
+            const signatureImage = signaturePad.toDataURL("image/jpeg", 0.7);
+            const base64Data = signatureImage.split(',')[1];
+            const signatureBytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+            
+            const jpgImage = await pdfDoc.embedJpg(signatureBytes);
+            const jpgDims = jpgImage.scale(0.3); // Unterschrift angemessen skalieren
+            
+            // Unterschrift einfügen
+            page.drawImage(jpgImage, {
+                x: leftMargin,
+                y: currentY - 60 - jpgDims.height,
+                width: jpgDims.width,
+                height: jpgDims.height,
+            });
 
+            // Unterschriften-Linie
+            currentY -= 80;
+            page.drawLine({
+                start: { x: leftMargin, y: currentY },
+                end: { x: leftMargin + 250, y: currentY },
+                thickness: 1,
+                color: rgb(0, 0, 0)
+            });
+            currentY -= 15;
+            page.drawText('Unterschrift', { x: leftMargin, y: currentY, size: 9, font: font });
+
+            // PDF fertigstellen und als Blob erzeugen
             const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes],{type:'application/pdf'});
+            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
             const url = URL.createObjectURL(blob);
 
-            const vorname = formData.get('vorname')||'Vorname';
-            const name = formData.get('name')||'Nachname';
+            const vorname = formData.get('vorname') || 'Vorname';
+            const name = formData.get('name') || 'Nachname';
+            const fileName = `Beitrittserklaerung_${vorname}_${name}.pdf`;
+
+            // Download-Logik plattformübergreifend
             const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 
-            if(isIOS){
-                window.location.href = url;
-                alert("iPhone erkannt: PDF wird im Browser geöffnet. Bitte oben rechts auf 'Teilen' tippen und 'In Dateien sichern' auswählen, um die PDF herunterzuladen.");
+            if (isIOS) {
+                // Bei iOS öffnen wir das PDF bevorzugt in einem neuen Tab für besseres Handling
+                window.open(url, '_blank');
+                alert("Tipp für iPhone: Falls sich die Datei geöffnet hat, tippe unten/oben auf 'Teilen' und wähle 'In Dateien sichern'.");
             } else {
                 const a = document.createElement('a');
                 a.href = url;
-                a.download = `Beitrittserklaerung-${vorname}-${name}-${formattedDate.replace(/\./g,'-')}.pdf`;
+                a.download = fileName;
                 document.body.appendChild(a);
                 a.click();
                 document.body.removeChild(a);
+                // Speicherplatz wieder freigeben
+                setTimeout(() => URL.revokeObjectURL(url), 100);
             }
         });
 
-        // Email-Button bleibt unverändert
+        // Email-Button
         document.getElementById('emailButton').addEventListener('click', function(){
-            if(!areAllFieldsFilled()){ showErrorMessage('Bitte füllen Sie alle erforderlichen Felder aus.'); return; }
+            if(!areAllFieldsFilled() || signaturePad.isEmpty()){ 
+                showErrorMessage('Bitte füllen Sie alle Felder aus und unterschreiben Sie.'); 
+                return; 
+            }
+            if(validateIBAN(document.getElementById('iban').value) !== "Korrekt") {
+                showErrorMessage('Bitte korrigieren Sie die IBAN.');
+                return;
+            }
             hideErrorMessage();
-            const ibanToCheck = document.getElementById('iban').value;
-            if(validateIBAN(ibanToCheck)!=="Die IBAN ist korrekt.") return;
 
             const vorname = document.getElementById('vorname').value;
             const name = document.getElementById('name').value;
             const email = "christopher@online-jack.de";
-            const subject = "Beitrittserklärung";
-            const body = `**${vorname}, Bitte vergessen Sie nicht, die automatisch erstellte PDF-Datei beizufügen!**\n\nHallo liebes KJN-Team,\n\nanbei finden Sie meine Beitrittserklärung im PDF-Format.\n\nMit freundlichen Grüßen,\n${vorname} ${name}`;
+            const subject = "Beitrittserklärung - " + vorname + " " + name;
+            const body = `Hallo liebes KJN-Team,\n\nanbei sende ich euch meine Beitrittserklärung im Anhang als PDF.\n\nMit freundlichen Grüßen,\n${vorname} ${name}\n\n---\nHINWEIS AN ${vorname.toUpperCase()}:\nBitte vergiss nicht, die soeben heruntergeladene PDF-Datei manuell an diese E-Mail anzuhängen!`;
+            
             window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
         });
-
     </script>
 </body>
 </html>
