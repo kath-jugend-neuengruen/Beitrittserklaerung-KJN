@@ -31,11 +31,7 @@
             font-size: 12px;
             box-sizing: border-box;
         }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 10px;
-            text-align: center;
-        }
+        h1 { font-size: 24px; margin-bottom: 10px; text-align: center; }
         h2 { font-size: 18px; margin-top: 20px; margin-bottom: 10px; color: #333; }
         form {
             background-color: white;
@@ -49,13 +45,8 @@
         .form-group { margin-bottom: 15px; width: 100%; }
         label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px;}
         input { 
-            width: 100%; 
-            padding: 10px; 
-            border-radius: 5px; 
-            border: 1px solid #ccc; 
-            font-size: 14px; 
-            box-sizing: border-box;
-            margin-bottom: 10px;
+            width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; 
+            font-size: 14px; box-sizing: border-box; margin-bottom: 10px;
         }
         .button-containers { display: flex; justify-content: center; align-items: center; margin-bottom:20px; }
         .download-button { 
@@ -68,8 +59,7 @@
         .button-container { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
         .button-container button { 
             padding: 12px 20px; font-size: 16px; border: none; border-radius: 5px; 
-            color: white; cursor: pointer; font-weight: bold;
-            transition: opacity 0.2s ease;
+            color: white; cursor: pointer; font-weight: bold; transition: opacity 0.2s ease;
         }
         .button-container button:hover { opacity: 0.8; }
         #clear-signature { background-color: #dc3545; }
@@ -148,7 +138,7 @@
 
         <div class="button-container">
             <button type="button" id="clear-signature">🗑 Unterschrift löschen</button>
-            <button type="button" id="download-pdf">📥 PDF generieren</button>
+            <button type="button" id="download-pdf">📥 PDF Speichern / Teilen</button>
             <button type="button" id="emailButton">✉️ PDF per E-Mail senden</button>
         </div>
 
@@ -159,19 +149,14 @@
 
     <script>
         const canvas = document.getElementById('signature-pad');
-        
-        // Unterschriften-Pad mit weißem Hintergrund initialisieren (wichtig für JPEG-Kompression)
-        const signaturePad = new SignaturePad(canvas, {
-            backgroundColor: 'rgb(255, 255, 255)' 
-        });
+        const signaturePad = new SignaturePad(canvas, { backgroundColor: 'rgb(255, 255, 255)' });
 
-        // Signatur-Canvas responsiv anpassen
         function resizeCanvas() {
             const ratio = Math.max(window.devicePixelRatio || 1, 1);
             canvas.width = canvas.offsetWidth * ratio;
             canvas.height = canvas.offsetHeight * ratio;
             canvas.getContext("2d").scale(ratio, ratio);
-            signaturePad.clear(); // Pad leeren nach Resize, um Verzerrungen zu vermeiden
+            signaturePad.clear(); 
         }
         window.addEventListener("resize", resizeCanvas);
         resizeCanvas();
@@ -201,7 +186,9 @@
             signaturePad.clear();
         });
 
-        // PDF Generierung
+        // ==========================================
+        // PDF GENERIERUNG UND SICHERER DOWNLOAD
+        // ==========================================
         document.getElementById('download-pdf').addEventListener('click', async () => {
             const formData = new FormData(document.getElementById('membership-form'));
             const ibanToCheck = document.getElementById('iban').value;
@@ -224,125 +211,148 @@
             }
             hideErrorMessage();
 
-            // Lade PDF-Lib Funktionen
-            const { PDFDocument, rgb, StandardFonts } = PDFLib;
-            const pdfDoc = await PDFDocument.create();
-            // Standard A4 Seite erstellen (595.28 x 841.89 Punkt)
-            const page = pdfDoc.addPage([595.28, 841.89]); 
-            
-            const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-            const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-            const textSize = 11;
-            let currentY = 780;
-            const leftMargin = 50;
+            // Lade Button-Status anpassen, während generiert wird
+            const downloadBtn = document.getElementById('download-pdf');
+            const originalBtnText = downloadBtn.innerText;
+            downloadBtn.innerText = "⏳ Generiere...";
+            downloadBtn.disabled = true;
 
-            // Datum formatieren
-            const currentDate = new Date();
-            const formattedDate = `${currentDate.getDate().toString().padStart(2,'0')}.${(currentDate.getMonth()+1).toString().padStart(2,'0')}.${currentDate.getFullYear()}`;
+            try {
+                const { PDFDocument, rgb, StandardFonts } = PDFLib;
+                const pdfDoc = await PDFDocument.create();
+                const page = pdfDoc.addPage([595.28, 841.89]); 
+                
+                const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+                const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+                const textSize = 11;
+                let currentY = 780;
+                const leftMargin = 50;
 
-            // Kopfzeile (Titel)
-            page.drawText('Kath. Jugend Neuengrün-Schlegelshaid', { x: leftMargin, y: currentY, size: 16, font: fontBold });
-            currentY -= 25;
-            page.drawText('Beitrittserklärung', { x: leftMargin, y: currentY, size: 14, font: fontBold });
-            currentY -= 30;
+                const currentDate = new Date();
+                const formattedDate = `${currentDate.getDate().toString().padStart(2,'0')}.${(currentDate.getMonth()+1).toString().padStart(2,'0')}.${currentDate.getFullYear()}`;
 
-            // Einleitungstext
-            const introText1 = 'Hiermit erkläre ich meinen Beitritt zur Kath. Jugend Neuengrün-Schlegelshaid.';
-            const introText2 = 'Ich erkenne die Satzung des Vereins an und bin damit einverstanden, dass der Mitgliedsbeitrag';
-            const introText3 = 'per SEPA-Basislastschrift von meinem Konto eingezogen wird.';
-            page.drawText(introText1, { x: leftMargin, y: currentY, size: textSize, font: font }); currentY -= 15;
-            page.drawText(introText2, { x: leftMargin, y: currentY, size: textSize, font: font }); currentY -= 15;
-            page.drawText(introText3, { x: leftMargin, y: currentY, size: textSize, font: font }); currentY -= 40;
+                page.drawText('Kath. Jugend Neuengrün-Schlegelshaid', { x: leftMargin, y: currentY, size: 16, font: fontBold });
+                currentY -= 25;
+                page.drawText('Beitrittserklärung', { x: leftMargin, y: currentY, size: 14, font: fontBold });
+                currentY -= 30;
 
-            // Funktion zum Zeichnen einer Formular-Zeile
-            const drawRow = (label, value) => {
-                page.drawText(label + ':', { x: leftMargin, y: currentY, size: textSize, font: fontBold });
-                page.drawText(value, { x: leftMargin + 160, y: currentY, size: textSize, font: font });
+                const introText1 = 'Hiermit erkläre ich meinen Beitritt zur Kath. Jugend Neuengrün-Schlegelshaid.';
+                const introText2 = 'Ich erkenne die Satzung des Vereins an und bin damit einverstanden, dass der Mitgliedsbeitrag';
+                const introText3 = 'per SEPA-Basislastschrift von meinem Konto eingezogen wird.';
+                page.drawText(introText1, { x: leftMargin, y: currentY, size: textSize, font: font }); currentY -= 15;
+                page.drawText(introText2, { x: leftMargin, y: currentY, size: textSize, font: font }); currentY -= 15;
+                page.drawText(introText3, { x: leftMargin, y: currentY, size: textSize, font: font }); currentY -= 40;
+
+                const drawRow = (label, value) => {
+                    page.drawText(label + ':', { x: leftMargin, y: currentY, size: textSize, font: fontBold });
+                    page.drawText(value, { x: leftMargin + 160, y: currentY, size: textSize, font: font });
+                    currentY -= 20;
+                };
+
+                page.drawText('Persönliche Daten', { x: leftMargin, y: currentY, size: 13, font: fontBold, color: rgb(0, 0.4, 0) });
                 currentY -= 20;
-            };
+                drawRow('Vorname', formData.get('vorname'));
+                drawRow('Nachname', formData.get('name'));
+                drawRow('Geburtsdatum', formData.get('geburtsdatum'));
+                drawRow('Straße/Haus-Nr.', formData.get('strasse'));
+                drawRow('PLZ / Wohnort', formData.get('plz'));
+                drawRow('Telefon', formData.get('telefon'));
+                drawRow('E-Mail', formData.get('email'));
+                
+                currentY -= 20;
 
-            // Persönliche Daten
-            page.drawText('Persönliche Daten', { x: leftMargin, y: currentY, size: 13, font: fontBold, color: rgb(0, 0.4, 0) });
-            currentY -= 20;
-            drawRow('Vorname', formData.get('vorname'));
-            drawRow('Nachname', formData.get('name'));
-            drawRow('Geburtsdatum', formData.get('geburtsdatum'));
-            drawRow('Straße/Haus-Nr.', formData.get('strasse'));
-            drawRow('PLZ / Wohnort', formData.get('plz'));
-            drawRow('Telefon', formData.get('telefon'));
-            drawRow('E-Mail', formData.get('email'));
-            
-            currentY -= 20;
+                page.drawText('Bankverbindung (SEPA-Mandat)', { x: leftMargin, y: currentY, size: 13, font: fontBold, color: rgb(0, 0.4, 0) });
+                currentY -= 20;
+                drawRow('Kontoinhaber', formData.get('kontoinhaber'));
+                drawRow('IBAN', formData.get('iban'));
+                drawRow('BIC', formData.get('bic'));
 
-            // Bankverbindung
-            page.drawText('Bankverbindung (SEPA-Mandat)', { x: leftMargin, y: currentY, size: 13, font: fontBold, color: rgb(0, 0.4, 0) });
-            currentY -= 20;
-            drawRow('Kontoinhaber', formData.get('kontoinhaber'));
-            drawRow('IBAN', formData.get('iban'));
-            drawRow('BIC', formData.get('bic'));
+                currentY -= 40;
 
-            currentY -= 40;
+                const ort = formData.get('ort');
+                page.drawText(`${ort}, den ${formattedDate}`, { x: leftMargin, y: currentY, size: textSize, font: font });
+                
+                const signatureImage = signaturePad.toDataURL("image/jpeg", 0.7);
+                const base64Data = signatureImage.split(',')[1];
+                const signatureBytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
+                
+                const jpgImage = await pdfDoc.embedJpg(signatureBytes);
+                const jpgDims = jpgImage.scale(0.3); 
+                
+                page.drawImage(jpgImage, {
+                    x: leftMargin,
+                    y: currentY - 60 - jpgDims.height,
+                    width: jpgDims.width,
+                    height: jpgDims.height,
+                });
 
-            // Ort, Datum und Unterschriftstext
-            const ort = formData.get('ort');
-            page.drawText(`${ort}, den ${formattedDate}`, { x: leftMargin, y: currentY, size: textSize, font: font });
-            
-            // Bildkompression: Wir nutzen JPEG mit 70% Qualität anstatt schwerem PNG.
-            const signatureImage = signaturePad.toDataURL("image/jpeg", 0.7);
-            const base64Data = signatureImage.split(',')[1];
-            const signatureBytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
-            
-            const jpgImage = await pdfDoc.embedJpg(signatureBytes);
-            const jpgDims = jpgImage.scale(0.3); // Unterschrift angemessen skalieren
-            
-            // Unterschrift einfügen
-            page.drawImage(jpgImage, {
-                x: leftMargin,
-                y: currentY - 60 - jpgDims.height,
-                width: jpgDims.width,
-                height: jpgDims.height,
-            });
+                currentY -= 80;
+                page.drawLine({
+                    start: { x: leftMargin, y: currentY },
+                    end: { x: leftMargin + 250, y: currentY },
+                    thickness: 1,
+                    color: rgb(0, 0, 0)
+                });
+                currentY -= 15;
+                page.drawText('Unterschrift', { x: leftMargin, y: currentY, size: 9, font: font });
 
-            // Unterschriften-Linie
-            currentY -= 80;
-            page.drawLine({
-                start: { x: leftMargin, y: currentY },
-                end: { x: leftMargin + 250, y: currentY },
-                thickness: 1,
-                color: rgb(0, 0, 0)
-            });
-            currentY -= 15;
-            page.drawText('Unterschrift', { x: leftMargin, y: currentY, size: 9, font: font });
+                const pdfBytes = await pdfDoc.save();
+                
+                // Dateiname erstellen
+                const vorname = formData.get('vorname').trim() || 'Vorname';
+                const name = formData.get('name').trim() || 'Nachname';
+                const fileName = `Beitrittserklaerung_${vorname}_${name}.pdf`;
 
-            // PDF fertigstellen und als Blob erzeugen
-            const pdfBytes = await pdfDoc.save();
-            const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-            const url = URL.createObjectURL(blob);
+                // Aus den Bytes ein File-Objekt machen (wichtig für die Share-API)
+                const file = new File([pdfBytes], fileName, { type: 'application/pdf' });
 
-            const vorname = formData.get('vorname') || 'Vorname';
-            const name = formData.get('name') || 'Nachname';
-            const fileName = `Beitrittserklaerung_${vorname}_${name}.pdf`;
+                // PRÜFEN: Werden native Share-Funktionen unterstützt? (iOS/Android)
+                if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                    try {
+                        await navigator.share({
+                            files: [file],
+                            title: 'Beitrittserklärung',
+                            text: 'Hier ist meine Beitrittserklärung.'
+                        });
+                        console.log('Erfolgreich geteilt/gespeichert');
+                    } catch (error) {
+                        console.log('Teilen abgebrochen oder fehlgeschlagen', error);
+                        fallbackDownload(file, fileName); // Falls Nutzer abbricht oder es hakt
+                    }
+                } else {
+                    // FALLBACK: Klassischer Download für PC oder ältere Browser
+                    fallbackDownload(file, fileName);
+                }
 
-            // Download-Logik plattformübergreifend
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-
-            if (isIOS) {
-                // Bei iOS öffnen wir das PDF bevorzugt in einem neuen Tab für besseres Handling
-                window.open(url, '_blank');
-                alert("Tipp für iPhone: Falls sich die Datei geöffnet hat, tippe unten/oben auf 'Teilen' und wähle 'In Dateien sichern'.");
-            } else {
-                const a = document.createElement('a');
-                a.href = url;
-                a.download = fileName;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                // Speicherplatz wieder freigeben
-                setTimeout(() => URL.revokeObjectURL(url), 100);
+            } catch (err) {
+                console.error("Fehler bei der PDF-Generierung:", err);
+                showErrorMessage('Es gab einen Fehler beim Erstellen der PDF.');
+            } finally {
+                // Button wieder zurücksetzen
+                downloadBtn.innerText = originalBtnText;
+                downloadBtn.disabled = false;
             }
         });
 
-        // Email-Button
+        // Hilfsfunktion für den klassischen Download
+        function fallbackDownload(file, fileName) {
+            const url = URL.createObjectURL(file);
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = url;
+            a.download = fileName;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            setTimeout(() => URL.revokeObjectURL(url), 100);
+            
+            // Extra Fallback für sehr restriktive iOS Versionen, falls Web Share versagt
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+            if (isIOS) {
+                alert("Tipp für iPhone: Falls der Download nicht direkt startete, überprüfen Sie Ihre 'Dateien'-App (Ordner: Downloads).");
+            }
+        }
+
         document.getElementById('emailButton').addEventListener('click', function(){
             if(!areAllFieldsFilled() || signaturePad.isEmpty()){ 
                 showErrorMessage('Bitte füllen Sie alle Felder aus und unterschreiben Sie.'); 
