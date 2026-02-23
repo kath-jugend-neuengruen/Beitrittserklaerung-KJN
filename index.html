@@ -10,141 +10,69 @@
     <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
 
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin: 0;
-            padding: 20px;
-            background-color: #f5f5f5;
-        }
-        .scrollable-text {
-            width: 100%;
-            height: 100px;
-            margin: 0 0 15px 0;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            resize: none;
-            overflow-y: scroll;
-            font-size: 12px;
-            box-sizing: border-box;
-        }
-        h1 { font-size: 24px; margin-bottom: 10px; text-align: center; }
-        h2 { font-size: 18px; margin-top: 20px; margin-bottom: 10px; color: #333; }
-        form {
-            background-color: white;
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 600px;
-            box-sizing: border-box;
-        }
-        .form-group { margin-bottom: 15px; width: 100%; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 14px;}
-        input { 
-            width: 100%; padding: 10px; border-radius: 5px; border: 1px solid #ccc; 
-            font-size: 14px; box-sizing: border-box; margin-bottom: 10px;
-        }
-        .button-containers { display: flex; justify-content: center; align-items: center; margin-bottom:20px; }
-        .download-button { 
-            display: inline-block; padding: 10px 20px; background-color: #007BFF; 
-            color: white; text-decoration: none; border-radius: 5px; font-size: 16px; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1); transition: background-color 0.3s ease; 
-        }
-        .download-button:hover { background-color: #0056b3; }
-        
-        .button-container { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; }
-        .button-container button { 
-            padding: 12px 20px; font-size: 16px; border: none; border-radius: 5px; 
-            color: white; cursor: pointer; font-weight: bold; transition: opacity 0.2s ease;
-        }
-        .button-container button:hover { opacity: 0.8; }
-        #clear-signature { background-color: #dc3545; }
-        #download-pdf { background-color: #fd7e14; }
-        #emailButton { background-color: #28a745; }
-        
-        @media (min-width: 600px) {
-            .button-container { flex-direction: row; justify-content: center; flex-wrap: wrap; }
-            .button-container button { flex: 1; min-width: 150px; }
-        }
-
-        img.logo { display: block; max-width: 150px; height: auto; margin:0 auto 20px auto; border-radius: 20px; border: 3px solid #228B22; transition: transform 0.2s ease; }
-        img.logo:hover { transform: scale(1.02); }
-        #result { font-weight: bold; color: #dc3545; margin-bottom: 10px; font-size: 14px; }
-        .error-message { color: #dc3545; margin-top: 15px; font-weight: bold; text-align: center; }
+        body { font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; padding: 20px; background-color: #f0f2f5; }
+        form { background: white; border-radius: 12px; padding: 25px; box-shadow: 0 8px 16px rgba(0,0,0,0.1); width: 100%; max-width: 650px; box-sizing: border-box; }
+        h1 { color: #1a1a1a; font-size: 22px; text-align: center; margin-bottom: 20px; border-bottom: 2px solid #228B22; padding-bottom: 10px; }
+        h2 { font-size: 16px; margin-top: 25px; color: #228B22; border-left: 4px solid #228B22; padding-left: 10px; }
+        .info-text { font-size: 12px; line-height: 1.5; color: #444; background: #f9f9f9; padding: 10px; border-radius: 6px; margin-bottom: 15px; }
+        .form-group { margin-bottom: 12px; }
+        label { display: block; margin-bottom: 4px; font-weight: 600; font-size: 13px; color: #333; }
+        input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-sizing: border-box; }
+        canvas { width: 100%; height: 180px; border: 2px dashed #999; border-radius: 8px; background: #fff; cursor: crosshair; touch-action: none; }
+        .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 25px; }
+        button { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; color: white; min-width: 140px; }
+        #clear-signature { background: #6c757d; }
+        #download-pdf { background: #fd7e14; }
+        #emailButton { background: #228B22; }
+        .logo { display: block; max-width: 120px; margin: 0 auto 15px; border-radius: 10px; }
+        #error-message { color: #dc3545; font-weight: bold; margin-top: 15px; text-align: center; font-size: 14px; }
     </style>
 </head>
 <body>
+
     <form id="membership-form">
+        <img class="logo" src="https://github.com/kath-jugend-neuengruen/Beitrittserklaerung-KJN/blob/main/470207678_3926429560975333_2043178117568937116_n.jpg?raw=true" alt="KJN Logo">
         <h1>Beitrittserklärung KJN</h1>
-        <a href="https://www.facebook.com/kjneuengruen/?locale=de_DE" target="_blank">
-            <img class="logo" src="https://github.com/kath-jugend-neuengruen/Beitrittserklaerung-KJN/blob/main/470207678_3926429560975333_2043178117568937116_n.jpg?raw=true" alt="Logo">
-        </a>
 
-        <div class="button-containers">
-            <a href="KJNeuengrün_Termine2025.ics" download class="download-button">📅 Veranstaltungskalender 2025</a>
+        <div class="info-text">
+            Hiermit erkläre ich meinen Beitritt zur Kath. Jugend Neuengrün-Schlegelshaid und bin gleichzeitig damit einverstanden, dass der Verein meine unten angegebenen Daten, wie z.B. Vor- und Zuname, Geburtstag usw., sowie Ehrungen/Auszeichnungen und Fotografien, veröffentlichen darf. Dieser Einwilligung kann ich jederzeit widersprechen.
         </div>
+
+        <h2>Persönliche Daten</h2>
+        <div class="form-group"><label>Vorname</label><input type="text" name="vorname" required></div>
+        <div class="form-group"><label>Name</label><input type="text" name="name" required></div>
+        <div class="form-group"><label>Geburtsdatum</label><input type="date" name="geburtsdatum" required></div>
+        <div class="form-group"><label>Straße/Haus-Nr</label><input type="text" name="strasse" required></div>
+        <div class="form-group"><label>PLZ/Wohnort</label><input type="text" name="plz" required></div>
+        <div class="form-group"><label>Telefon</label><input type="text" name="telefon" required></div>
+        <div class="form-group"><label>E-Mail</label><input type="email" name="email" required></div>
+
+        <h2>SEPA-Lastschriftmandat</h2>
+        <div class="info-text" style="font-weight: 600;">
+            Gläubiger-ID: DE50ZZZ00000431398 <br> 
+            Mandatsreferenznummer: Mitgliedsnummer
+        </div>
+        <div class="info-text">
+            Ich ermächtige die Kath. Jugend Neuengrün-Schlegelshaid den Jahresbeitrag von momentan 7.-- € (Fälligkeit: jeweils Anfang Januar) von meinem Konto mittels Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die von der Kath. Jugend Neuengrün-Schlegelshaid auf mein Konto gezogenen Lastschriften einzulösen.
+        </div>
+        <div class="form-group"><label>Kontoinhaber</label><input type="text" name="kontoinhaber" required></div>
+        <div class="form-group"><label>IBAN</label><input type="text" id="iban" name="iban" required></div>
+        <div id="iban-check" style="font-size: 11px; margin-top: -10px; margin-bottom: 10px;"></div>
+        
+        <div class="form-group"><label>Ort der Unterschrift</label><input type="text" name="ort" required placeholder="z.B. Neuengrün"></div>
 
         <div class="form-group">
-            <textarea class="scrollable-text" readonly>Hiermit erkläre ich meinen Beitritt zur Kath. Jugend Neuengrün-Schlegelshaid. Ich erkenne die Satzung des Vereins an und bin damit einverstanden, dass der Mitgliedsbeitrag per SEPA-Basislastschrift von meinem Konto eingezogen wird.</textarea>
-
-            <h2>Persönliche Daten</h2>
-            <label for="vorname">Vorname:</label>
-            <input type="text" id="vorname" name="vorname" required>
-            
-            <label for="name">Nachname:</label>
-            <input type="text" id="name" name="name" required>
-            
-            <label for="geburtsdatum">Geburtsdatum:</label>
-            <input type="date" id="geburtsdatum" name="geburtsdatum" required>
-            
-            <label for="strasse">Straße / Hausnummer:</label>
-            <input type="text" id="strasse" name="strasse" required>
-            
-            <label for="plz">PLZ / Wohnort:</label>
-            <input type="text" id="plz" name="plz" required>
-            
-            <label for="telefon">Telefon:</label>
-            <input type="text" id="telefon" name="telefon" required>
-            
-            <label for="email">E-Mail:</label>
-            <input type="email" id="email" name="email" required>
-            
-            <h2>Bankverbindung (SEPA-Lastschriftmandat)</h2>
-            <label for="kontoinhaber">Kontoinhaber:</label>
-            <input type="text" id="kontoinhaber" name="kontoinhaber" required>
-            
-            <label for="iban">IBAN:</label>
-            <input type="text" id="iban" name="iban" required>
-            <div id="result"></div>
-            
-            <label for="bic">BIC:</label>
-            <input type="text" id="bic" name="bic" required>
-            
-            <h2>Unterschrift</h2>
-            <label for="ort">Aktueller Ort:</label>
-            <input type="text" id="ort" name="ort" required placeholder="z.B. Neuengrün">
+            <label>Unterschrift</label>
+            <canvas id="signature-pad"></canvas>
         </div>
 
-        <div class="form-group">
-            <label for="unterschrift">Bitte hier unterschreiben:</label>
-            <canvas id="signature-pad" style="width: 100%; height: 200px; border: 1px solid #000; border-radius: 5px; background-color: #fff; touch-action: none;"></canvas>
+        <div id="error-message"></div>
+
+        <div class="btn-row">
+            <button type="button" id="clear-signature">🗑 Leeren</button>
+            <button type="button" id="download-pdf">📥 PDF Speichern</button>
+            <button type="button" id="emailButton">✉️ Per Mail senden</button>
         </div>
-
-        <div id="error-message" class="error-message"></div>
-
-        <div class="button-container">
-            <button type="button" id="clear-signature">🗑 Unterschrift löschen</button>
-            <button type="button" id="download-pdf">📥 PDF Speichern / Teilen</button>
-            <button type="button" id="emailButton">✉️ PDF per E-Mail senden</button>
-        </div>
-
-        <p style="text-align:center; font-size:12px; margin-top:20px; color:#666;">
-            1. Alles ausfüllen → 2. PDF generieren → 3. E-Mail Programm öffnen
-        </p>
     </form>
 
     <script>
@@ -161,217 +89,122 @@
         window.addEventListener("resize", resizeCanvas);
         resizeCanvas();
 
-        function areAllFieldsFilled() {
-            const requiredFields = document.querySelectorAll('#membership-form [required]');
-            return Array.from(requiredFields).every(field => field.value.trim() !== '');
-        }
-
-        function showErrorMessage(message) {
-            document.getElementById('error-message').textContent = message;
-        }
-
-        function hideErrorMessage() {
-            document.getElementById('error-message').textContent = '';
-        }
-
         function validateIBAN(iban) {
             iban = iban.toUpperCase().replace(/\s/g, '');
-            if (iban.length !== 22) return "Ungültige IBAN-Länge (muss 22 Zeichen haben).";
-            const rearrangedIban = iban.slice(4) + iban.slice(0, 4);
-            const numericIban = rearrangedIban.split('').map(char => /[A-Z]/.test(char) ? char.charCodeAt(0)-55 : char).join('');
-            return BigInt(numericIban) % 97n === 1n ? "Korrekt" : "Die IBAN ist fehlerhaft.";
+            if (iban.length !== 22) return false;
+            const rearranged = iban.slice(4) + iban.slice(0, 4);
+            const numeric = rearranged.split('').map(c => /[A-Z]/.test(c) ? c.charCodeAt(0)-55 : c).join('');
+            return BigInt(numeric) % 97n === 1n;
         }
 
-        document.getElementById('clear-signature').addEventListener('click', () => {
-            signaturePad.clear();
-        });
+        document.getElementById('clear-signature').addEventListener('click', () => signaturePad.clear());
 
-        // ==========================================
-        // PDF GENERIERUNG UND SICHERER DOWNLOAD
-        // ==========================================
         document.getElementById('download-pdf').addEventListener('click', async () => {
-            const formData = new FormData(document.getElementById('membership-form'));
-            const ibanToCheck = document.getElementById('iban').value;
-            const validationResult = validateIBAN(ibanToCheck);
+            const form = document.getElementById('membership-form');
+            const formData = new FormData(form);
             
-            if (validationResult !== "Korrekt") {
-                document.getElementById('result').innerText = validationResult;
+            if (!form.checkValidity() || signaturePad.isEmpty()) {
+                document.getElementById('error-message').textContent = "Bitte alle Felder ausfüllen und unterschreiben!";
                 return;
+            }
+            if (!validateIBAN(formData.get('iban'))) {
+                document.getElementById('error-message').textContent = "Die IBAN ist ungültig!";
+                return;
+            }
+            document.getElementById('error-message').textContent = "";
+
+            // PDF Generierung
+            const { PDFDocument, rgb, StandardFonts } = PDFLib;
+            const pdfDoc = await PDFDocument.create();
+            const page = pdfDoc.addPage([595.28, 841.89]); // A4
+            const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+            const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+            
+            let y = 800;
+            const margin = 50;
+
+            // Header
+            page.drawText('Kath. Jugend Neuengrün-Schlegelshaid', { x: margin, y: y, size: 16, font: fontBold });
+            y -= 20;
+            page.drawText('Beitrittserklärung', { x: margin, y: y, size: 14, font: fontBold });
+            y -= 35;
+
+            // Einleitungstext
+            const introText = "Hiermit erkläre ich meinen Beitritt zur Kath. Jugend Neuengrün-Schlegelshaid und bin gleichzeitig damit einverstanden, dass der Verein meine unten angegebenen Daten, wie z.B. Vor- und Zuname, Geburtstag usw., sowie Ehrungen/Auszeichnungen und Fotografien, veröffentlichen darf. Dieser Einwilligung kann ich jederzeit widersprechen.";
+            page.drawText(introText, { x: margin, y: y, size: 10, font: font, maxWidth: 500, lineHeight: 12 });
+            y -= 55;
+
+            // Daten Zeichnen Funktion
+            const drawField = (label, value) => {
+                page.drawText(label + ":", { x: margin, y: y, size: 10, font: fontBold });
+                page.drawText(String(value), { x: margin + 120, y: y, size: 10, font: font });
+                y -= 18;
+            };
+
+            drawField('Vorname', formData.get('vorname'));
+            drawField('Name', formData.get('name'));
+            drawField('Geburtsdatum', formData.get('geburtsdatum'));
+            drawField('Straße/Haus-Nr', formData.get('strasse'));
+            drawField('PLZ/Wohnort', formData.get('plz'));
+            drawField('Telefon', formData.get('telefon'));
+            drawField('E-Mail', formData.get('email'));
+
+            y -= 20;
+            page.drawText('SEPA-Lastschriftmandat', { x: margin, y: y, size: 12, font: fontBold, color: rgb(0.13, 0.54, 0.13) });
+            y -= 15;
+            page.drawText('Gläubiger-ID: DE50ZZZ00000431398     Mandatsreferenz: Mitgliedsnummer', { x: margin, y: y, size: 9, font: fontBold });
+            y -= 20;
+
+            const sepaText = "Ich ermächtige die Kath. Jugend Neuengrün-Schlegelshaid den Jahresbeitrag von momentan 7.-- € (Fälligkeit: jeweils Anfang Januar) von meinem Konto mittels Lastschrift einzuziehen. Zugleich weise ich mein Kreditinstitut an, die von der Kath. Jugend Neuengrün-Schlegelshaid, auf mein Konto gezogenen Lastschriften einzulösen.";
+            page.drawText(sepaText, { x: margin, y: y, size: 9, font: font, maxWidth: 500, lineHeight: 11 });
+            y -= 45;
+
+            const hinweisText = "Hinweis: Ich kann innerhalb von acht Wochen, beginnend mit dem Belastungsdatum, die Erstattung des belasteten Betrages verlangen. Es gelten dabei die mit meinem Kreditinstitut vereinbarten Bedingungen.";
+            page.drawText(hinweisText, { x: margin, y: y, size: 8, font: font, maxWidth: 500, lineHeight: 10, color: rgb(0.3, 0.3, 0.3) });
+            y -= 30;
+
+            drawField('Kontoinhaber', formData.get('kontoinhaber'));
+            drawField('IBAN', formData.get('iban'));
+
+            y -= 40;
+            const dateStr = new Date().toLocaleDateString('de-DE');
+            page.drawText(`${formData.get('ort')}, den ${dateStr}`, { x: margin, y: y, size: 10, font: font });
+            
+            // Unterschrift (JPEG Kompression für geringe Dateigröße)
+            const sigImg = signaturePad.toDataURL("image/jpeg", 0.7);
+            const sigBytes = Uint8Array.from(atob(sigImg.split(',')[1]), c => c.charCodeAt(0));
+            const sigImgEmbed = await pdfDoc.embedJpg(sigBytes);
+            page.drawImage(sigImgEmbed, { x: margin, y: y - 70, width: 150, height: 60 });
+            
+            y -= 75;
+            page.drawLine({ start: {x: margin, y: y}, end: {x: margin + 180, y: y}, thickness: 1 });
+            page.drawText('Unterschrift', { x: margin, y: y - 12, size: 8, font: font });
+
+            const pdfBytes = await pdfDoc.save();
+            const file = new File([pdfBytes], `KJN_Beitritt_${formData.get('name')}.pdf`, { type: 'application/pdf' });
+
+            // Sicherer Download / Share für iOS & Android
+            if (navigator.canShare && navigator.canShare({ files: [file] })) {
+                await navigator.share({ files: [file], title: 'Beitrittserklärung KJN' });
             } else {
-                document.getElementById('result').innerText = '';
-            }
-
-            if (!areAllFieldsFilled()) { 
-                showErrorMessage('Bitte füllen Sie alle erforderlichen Felder aus.'); 
-                return; 
-            }
-            if (signaturePad.isEmpty()) {
-                showErrorMessage('Bitte vergessen Sie nicht zu unterschreiben.');
-                return;
-            }
-            hideErrorMessage();
-
-            // Lade Button-Status anpassen, während generiert wird
-            const downloadBtn = document.getElementById('download-pdf');
-            const originalBtnText = downloadBtn.innerText;
-            downloadBtn.innerText = "⏳ Generiere...";
-            downloadBtn.disabled = true;
-
-            try {
-                const { PDFDocument, rgb, StandardFonts } = PDFLib;
-                const pdfDoc = await PDFDocument.create();
-                const page = pdfDoc.addPage([595.28, 841.89]); 
-                
-                const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
-                const fontBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
-                const textSize = 11;
-                let currentY = 780;
-                const leftMargin = 50;
-
-                const currentDate = new Date();
-                const formattedDate = `${currentDate.getDate().toString().padStart(2,'0')}.${(currentDate.getMonth()+1).toString().padStart(2,'0')}.${currentDate.getFullYear()}`;
-
-                page.drawText('Kath. Jugend Neuengrün-Schlegelshaid', { x: leftMargin, y: currentY, size: 16, font: fontBold });
-                currentY -= 25;
-                page.drawText('Beitrittserklärung', { x: leftMargin, y: currentY, size: 14, font: fontBold });
-                currentY -= 30;
-
-                const introText1 = 'Hiermit erkläre ich meinen Beitritt zur Kath. Jugend Neuengrün-Schlegelshaid.';
-                const introText2 = 'Ich erkenne die Satzung des Vereins an und bin damit einverstanden, dass der Mitgliedsbeitrag';
-                const introText3 = 'per SEPA-Basislastschrift von meinem Konto eingezogen wird.';
-                page.drawText(introText1, { x: leftMargin, y: currentY, size: textSize, font: font }); currentY -= 15;
-                page.drawText(introText2, { x: leftMargin, y: currentY, size: textSize, font: font }); currentY -= 15;
-                page.drawText(introText3, { x: leftMargin, y: currentY, size: textSize, font: font }); currentY -= 40;
-
-                const drawRow = (label, value) => {
-                    page.drawText(label + ':', { x: leftMargin, y: currentY, size: textSize, font: fontBold });
-                    page.drawText(value, { x: leftMargin + 160, y: currentY, size: textSize, font: font });
-                    currentY -= 20;
-                };
-
-                page.drawText('Persönliche Daten', { x: leftMargin, y: currentY, size: 13, font: fontBold, color: rgb(0, 0.4, 0) });
-                currentY -= 20;
-                drawRow('Vorname', formData.get('vorname'));
-                drawRow('Nachname', formData.get('name'));
-                drawRow('Geburtsdatum', formData.get('geburtsdatum'));
-                drawRow('Straße/Haus-Nr.', formData.get('strasse'));
-                drawRow('PLZ / Wohnort', formData.get('plz'));
-                drawRow('Telefon', formData.get('telefon'));
-                drawRow('E-Mail', formData.get('email'));
-                
-                currentY -= 20;
-
-                page.drawText('Bankverbindung (SEPA-Mandat)', { x: leftMargin, y: currentY, size: 13, font: fontBold, color: rgb(0, 0.4, 0) });
-                currentY -= 20;
-                drawRow('Kontoinhaber', formData.get('kontoinhaber'));
-                drawRow('IBAN', formData.get('iban'));
-                drawRow('BIC', formData.get('bic'));
-
-                currentY -= 40;
-
-                const ort = formData.get('ort');
-                page.drawText(`${ort}, den ${formattedDate}`, { x: leftMargin, y: currentY, size: textSize, font: font });
-                
-                const signatureImage = signaturePad.toDataURL("image/jpeg", 0.7);
-                const base64Data = signatureImage.split(',')[1];
-                const signatureBytes = Uint8Array.from(atob(base64Data), c => c.charCodeAt(0));
-                
-                const jpgImage = await pdfDoc.embedJpg(signatureBytes);
-                const jpgDims = jpgImage.scale(0.3); 
-                
-                page.drawImage(jpgImage, {
-                    x: leftMargin,
-                    y: currentY - 60 - jpgDims.height,
-                    width: jpgDims.width,
-                    height: jpgDims.height,
-                });
-
-                currentY -= 80;
-                page.drawLine({
-                    start: { x: leftMargin, y: currentY },
-                    end: { x: leftMargin + 250, y: currentY },
-                    thickness: 1,
-                    color: rgb(0, 0, 0)
-                });
-                currentY -= 15;
-                page.drawText('Unterschrift', { x: leftMargin, y: currentY, size: 9, font: font });
-
-                const pdfBytes = await pdfDoc.save();
-                
-                // Dateiname erstellen
-                const vorname = formData.get('vorname').trim() || 'Vorname';
-                const name = formData.get('name').trim() || 'Nachname';
-                const fileName = `Beitrittserklaerung_${vorname}_${name}.pdf`;
-
-                // Aus den Bytes ein File-Objekt machen (wichtig für die Share-API)
-                const file = new File([pdfBytes], fileName, { type: 'application/pdf' });
-
-                // PRÜFEN: Werden native Share-Funktionen unterstützt? (iOS/Android)
-                if (navigator.canShare && navigator.canShare({ files: [file] })) {
-                    try {
-                        await navigator.share({
-                            files: [file],
-                            title: 'Beitrittserklärung',
-                            text: 'Hier ist meine Beitrittserklärung.'
-                        });
-                        console.log('Erfolgreich geteilt/gespeichert');
-                    } catch (error) {
-                        console.log('Teilen abgebrochen oder fehlgeschlagen', error);
-                        fallbackDownload(file, fileName); // Falls Nutzer abbricht oder es hakt
-                    }
-                } else {
-                    // FALLBACK: Klassischer Download für PC oder ältere Browser
-                    fallbackDownload(file, fileName);
-                }
-
-            } catch (err) {
-                console.error("Fehler bei der PDF-Generierung:", err);
-                showErrorMessage('Es gab einen Fehler beim Erstellen der PDF.');
-            } finally {
-                // Button wieder zurücksetzen
-                downloadBtn.innerText = originalBtnText;
-                downloadBtn.disabled = false;
+                const url = URL.createObjectURL(file);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = file.name;
+                document.body.appendChild(a);
+                a.click();
+                URL.revokeObjectURL(url);
             }
         });
 
-        // Hilfsfunktion für den klassischen Download
-        function fallbackDownload(file, fileName) {
-            const url = URL.createObjectURL(file);
-            const a = document.createElement('a');
-            a.style.display = 'none';
-            a.href = url;
-            a.download = fileName;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            setTimeout(() => URL.revokeObjectURL(url), 100);
-            
-            // Extra Fallback für sehr restriktive iOS Versionen, falls Web Share versagt
-            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-            if (isIOS) {
-                alert("Tipp für iPhone: Falls der Download nicht direkt startete, überprüfen Sie Ihre 'Dateien'-App (Ordner: Downloads).");
-            }
-        }
-
-        document.getElementById('emailButton').addEventListener('click', function(){
-            if(!areAllFieldsFilled() || signaturePad.isEmpty()){ 
-                showErrorMessage('Bitte füllen Sie alle Felder aus und unterschreiben Sie.'); 
-                return; 
-            }
-            if(validateIBAN(document.getElementById('iban').value) !== "Korrekt") {
-                showErrorMessage('Bitte korrigieren Sie die IBAN.');
-                return;
-            }
-            hideErrorMessage();
-
-            const vorname = document.getElementById('vorname').value;
-            const name = document.getElementById('name').value;
-            const email = "christopher@online-jack.de";
-            const subject = "Beitrittserklärung - " + vorname + " " + name;
-            const body = `Hallo liebes KJN-Team,\n\nanbei sende ich euch meine Beitrittserklärung im Anhang als PDF.\n\nMit freundlichen Grüßen,\n${vorname} ${name}\n\n---\nHINWEIS AN ${vorname.toUpperCase()}:\nBitte vergiss nicht, die soeben heruntergeladene PDF-Datei manuell an diese E-Mail anzuhängen!`;
-            
-            window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+        document.getElementById('emailButton').addEventListener('click', () => {
+            const formData = new FormData(document.getElementById('membership-form'));
+            const mail = "christopher@online-jack.de";
+            const subject = encodeURIComponent(`Beitrittserklärung KJN - ${formData.get('vorname')} ${formData.get('name')}`);
+            const body = encodeURIComponent(`Hallo KJN-Team,\n\nanbei sende ich meine Beitrittserklärung als PDF.\n\nViele Grüße\n${formData.get('vorname')}`);
+            window.location.href = `mailto:${mail}?subject=${subject}&body=${body}`;
         });
     </script>
 </body>
 </html>
+
