@@ -21,6 +21,7 @@
         canvas { width: 100%; height: 180px; border: 2px dashed #999; border-radius: 8px; background: #fff; cursor: crosshair; touch-action: none; }
         .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 25px; }
         button { flex: 1; padding: 12px; border: none; border-radius: 6px; font-weight: bold; cursor: pointer; transition: 0.2s; color: white; min-width: 140px; }
+        #clear-all { background: #db7781; }
         #clear-signature { background: #6c757d; }
         #download-pdf { background: #fd7e14; }
         #emailButton { background: #228B22; }
@@ -70,9 +71,14 @@
         <div id="error-message"></div>
 
         <div class="btn-row">
-            <button type="button" id="clear-signature">🗑 Leeren</button>
+            <button type="button" id="clear-signature">🗑 Unterschrift leeren</button>
+            <button type="button" id="clear-all">🧹 Alles leeren</button>
             <button type="button" id="download-pdf">📥 PDF Speichern</button>
             <button type="button" id="emailButton">✉️ Per Mail senden</button>
+        </div>
+
+        <div class="info-text" style="margin-top: 15px;">
+            Anleitung: Bitte zuerst das PDF speichern. Danach die Datei per E-Mail an die KJN schicken.
         </div>
 
         <div id="choice-modal" style="display:none; position:fixed; z-index:1000; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.9); align-items:center; justify-content:center;">
@@ -88,6 +94,69 @@
     <script>
         const canvas = document.getElementById('signature-pad');
         const signaturePad = new SignaturePad(canvas, { backgroundColor: 'rgb(255, 255, 255)' });
+        const form = document.getElementById('membership-form');
+
+        const FORM_STORAGE_KEY = 'kjn_membership_form_session_v1';
+        const SIGNATURE_STORAGE_KEY = 'kjn_signature_session_v1';
+
+        const formFields = Array.from(form.querySelectorAll('input, select, textarea'))
+            .filter((el) => el.name);
+
+        function readFormFromSession() {
+            const raw = sessionStorage.getItem(FORM_STORAGE_KEY);
+            if (!raw) return null;
+            try {
+                return JSON.parse(raw);
+            } catch (err) {
+                console.warn('Form session data could not be parsed.', err);
+                return null;
+            }
+        }
+
+        function saveFormToSession() {
+            const data = {};
+            formFields.forEach((el) => {
+                if (el.type === 'checkbox') {
+                    data[el.name] = el.checked;
+                } else if (el.type === 'radio') {
+                    if (el.checked) {
+                        data[el.name] = el.value;
+                    }
+                } else {
+                    data[el.name] = el.value;
+                }
+            });
+            sessionStorage.setItem(FORM_STORAGE_KEY, JSON.stringify(data));
+        }
+
+        function restoreFormFromSession() {
+            const data = readFormFromSession();
+            if (!data) return;
+            formFields.forEach((el) => {
+                if (!(el.name in data)) return;
+                if (el.type === 'checkbox') {
+                    el.checked = Boolean(data[el.name]);
+                } else if (el.type === 'radio') {
+                    el.checked = el.value === data[el.name];
+                } else {
+                    el.value = data[el.name] ?? '';
+                }
+            });
+        }
+
+        function saveSignatureToSession() {
+            if (signaturePad.isEmpty()) {
+                sessionStorage.removeItem(SIGNATURE_STORAGE_KEY);
+                return;
+            }
+            sessionStorage.setItem(SIGNATURE_STORAGE_KEY, signaturePad.toDataURL('image/png'));
+        }
+
+        function restoreSignatureFromSession() {
+            const dataUrl = sessionStorage.getItem(SIGNATURE_STORAGE_KEY);
+            if (!dataUrl) return;
+            signaturePad.fromDataURL(dataUrl);
+        }
 
         let lastWidth = 0;
 function resizeCanvas() {
@@ -101,10 +170,13 @@ function resizeCanvas() {
     canvas.getContext("2d").scale(ratio, ratio);
     
     // Nur beim ersten Laden oder echter Drehung des Bildschirms leeren
-    signaturePad.clear(); 
+    signaturePad.clear();
+    restoreSignatureFromSession();
 }
         window.addEventListener("resize", resizeCanvas);
         resizeCanvas();
+        restoreFormFromSession();
+        restoreSignatureFromSession();
 
         function validateIBAN(iban) {
             iban = iban.toUpperCase().replace(/\s/g, '');
@@ -114,7 +186,31 @@ function resizeCanvas() {
             return BigInt(numeric) % 97n === 1n;
         }
 
-        document.getElementById('clear-signature').addEventListener('click', () => signaturePad.clear());
+        document.getElementById('clear-signature').addEventListener('click', () => {
+            signaturePad.clear();
+            sessionStorage.removeItem(SIGNATURE_STORAGE_KEY);
+        });
+
+        document.getElementById('clear-all').addEventListener('click', () => {
+            formFields.forEach((el) => {
+                if (el.type === 'checkbox' || el.type === 'radio') {
+                    el.checked = false;
+                } else {
+                    el.value = '';
+                }
+            });
+            signaturePad.clear();
+            sessionStorage.removeItem(FORM_STORAGE_KEY);
+            sessionStorage.removeItem(SIGNATURE_STORAGE_KEY);
+            document.getElementById('error-message').textContent = '';
+        });
+
+        formFields.forEach((el) => {
+            el.addEventListener('input', saveFormToSession);
+            el.addEventListener('change', saveFormToSession);
+        });
+        signaturePad.onEnd = saveSignatureToSession;
+        window.addEventListener('beforeunload', saveFormToSession);
 
         document.getElementById('download-pdf').addEventListener('click', async () => {
             const form = document.getElementById('membership-form');
@@ -245,9 +341,11 @@ function resizeCanvas() {
 
         document.getElementById('emailButton').addEventListener('click', () => {
             const formData = new FormData(document.getElementById('membership-form'));
-            const mail = "christopher@online-jack.de";
+            const mail = "kath.j.neuengruen@gmail.com";
             const subject = encodeURIComponent(`Beitrittserklärung KJN - ${formData.get('vorname')} ${formData.get('name')}`);
-            const body = encodeURIComponent(`Hallo KJN-Team,\n\nanbei sende ich meine Beitrittserklärung als PDF.\n\nViele Grüße\n${formData.get('vorname')}`);
+            const body = encodeURIComponent(
+                `Hallo KJN-Team,\n\nanbei sende ich meine Beitrittserklärung als PDF.\n\nAnleitung: Bitte zuerst das PDF speichern. Danach die Datei per E-Mail an die KJN schicken.\n\nViele Grüße\n${formData.get('vorname')}`
+            );
             window.location.href = `mailto:${mail}?subject=${subject}&body=${body}`;
         });
 
@@ -268,10 +366,3 @@ function closeModal(event) {
     </script>
 </body>
 </html>
-
-
-
-
-
-
-
